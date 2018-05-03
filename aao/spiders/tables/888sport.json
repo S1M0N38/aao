@@ -1,0 +1,81 @@
+{
+    "soccer": {
+
+        "countries": {
+            "england": "england",
+            "italy": "italy",
+            "spain": "spain"
+        },
+
+        "leagues": {
+
+            "england":{
+                "premier_league": "premier_league",
+                "efl_championship": "the_championship",
+                "efl_league_one": "league_one",
+                "efl_league_two": "league_two",
+                "national_league": "national_league",
+                "national_league_north": null,
+                "national_league_south": null,
+                "northern_premier_league": null,
+                "southern_premier_league": null,
+                "isthmian_league": null,
+                "premier_league_2": null,
+                "fa_cup": "fa_cup",
+                "efl_cup" : null,
+                "efl_trophy": null,
+                "fa_trophy": "fa_trophy",
+                "fa_vase": null,
+                "fa_inter-league_cup": null
+                } ,
+
+            "italy": {
+                "serie_a": "serie_a",
+                "serie_b": "serie_b",
+                "serie_c_group_a": "serie_c_girone_a",
+                "serie_c_group_b": "serie_c_girone_b",
+                "serie_c_group_c": "serie_c_girone_c",
+                "primavera_1": null,
+                "primavera_2_group_a": null,
+                "primavera_2_group_b": null,
+                "coppa_italia": "tim_cup",
+                "supercoppa_italiana": null
+            },
+
+            "spain": {
+                "la_liga": "laliga",
+                "la_liga_2": "laliga2",
+                "segunda_division_b_group_1": "segunda_b-1",
+                "segunda_division_b_group_2": "segunda_b-2",
+                "segunda_division_b_group_3": "segunda_b-3",
+                "segunda_division_b_group_4": "segunda_b-4",
+                "tercera_division_group_1": "tercera_division_1",
+                "tercera_division_group_2": "tercera_division_2",
+                "tercera_division_group_3": "tercera_division_3",
+                "tercera_division_group_4": "tercera_division_4",
+                "tercera_division_group_5": "tercera_division_5",
+                "tercera_division_group_6": "tercera_division_6",
+                "tercera_division_group_7": "tercera_division_7",
+                "tercera_division_group_8": "tercera_division_8",
+                "tercera_division_group_9": "tercera_division_9",
+                "tercera_division_group_10": "tercera_division_10",
+                "tercera_division_group_11": "tercera_division_11",
+                "tercera_division_group_12": "tercera_division_12",
+                "tercera_division_group_13": "tercera_division_13",
+                "tercera_division_group_14": "tercera_division_14",
+                "tercera_division_group_15": "tercera_division_15",
+                "tercera_division_group_16": "tercera_division_16",
+                "tercera_division_group_17": "tercera_division_17",
+                "tercera_division_group_18": "tercera_division_18",
+                "premiera_division_women": "superliga_femenina__w_",
+                "segunda_division_women": null,
+                "youth_league": null,
+                "copa_del_rey": "copa_del_rey",
+                "copa_federacion": null,
+                "super_cup": null,
+                "copa_de_la_reina_women": null
+            }
+        }
+
+    }
+}
