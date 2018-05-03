@@ -1,6 +1,6 @@
 # Against all Odds
 
-Aganistallodds project aim to offert an enviroment where everyone can test his betting strategy on real odds.
+Aganistallodds project aim to offert an environment where everyone can test his betting strategy on real odds.
 You can get the odds in two way: through **manual scraping** or using the **api**.
 
 ## Installation
