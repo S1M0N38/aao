@@ -108,3 +108,6 @@ venv.bak/
 
 # jupyter notebook for manual testing
 *.ipynb
+
+# for digitalocean dev
+sync.sh
