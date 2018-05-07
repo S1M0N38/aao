@@ -21,9 +21,10 @@ class SpiderBet365(Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_session()
-        self._soccer = Soccer(self.browser, self.table)
+        self._soccer = Soccer(self.browser, self.log, self.table)
 
     def start_session(self):
+        self.log.info('starting new session ...')
         self.homepage()
         lang = '//ul[@class="lpnm"]/li/a'
         lang_bt = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
@@ -33,6 +34,7 @@ class SpiderBet365(Spider):
             lang_bt = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
             time.sleep(2)
             lang_bt.click()
+        self.log.debug('set english language')
         self.login()
         self.change_odds_format('Decimal')
 
@@ -43,9 +45,11 @@ class SpiderBet365(Spider):
                  f'/a[text() = "{format_}"]')
         drop_bt = self.wait.until(EC.element_to_be_clickable((By.XPATH, drop)))
         drop_bt.click()
+        self.log.debug('set odds format to decimal')
         self.browser.find_element_by_xpath(type_).click()
 
     def login(self):
+        self.log.debug(f'trying to log using {self.username} ...')
         username_box, password_box = self.browser.find_elements_by_xpath(
             '//input[@class="hm-Login_InputField "]')
         password_box_hidden = self.browser.find_element_by_xpath(
@@ -60,9 +64,10 @@ class SpiderBet365(Spider):
         submit_button.click()
         self.browser.find_element_by_class_name('hm-UserName_UserNameShown')
         # close the pop up that ask to confirm the identity
+        self.log.debug('closing the confermation-identity pop up ...')
         time.sleep(2)
         self.browser.get(self.base_url)
-        self.logger.info(f'succesfully logged in with {self.username}')
+        self.log.info(f'logged in with {self.username}')
 
     @property
     def soccer(self):
@@ -70,14 +75,18 @@ class SpiderBet365(Spider):
         is_soccer_close = self.browser.find_elements_by_xpath(xpath)
         if is_soccer_close:
             is_soccer_close[0].click()
+        self.log.debug('opening soccer page ...')
         return self._soccer
 
 
 class Soccer(SpiderBet365):
 
-    def __init__(self, browser, table):
+    def __init__(self, browser, log, table):
         self.browser = browser
+        self.log = log
+        self.log.debug('loading countries table ...')
         self.countries_dict = table['soccer']['countries']
+        self.log.debug('loading leagues table ...')
         self.leagues_dict = table['soccer']['leagues']
 
     def _country(self, country_name):
@@ -87,10 +96,14 @@ class Soccer(SpiderBet365):
             country = self.browser.find_element_by_xpath(xpath)
             header = country.find_element_by_xpath('..').get_attribute('class')
             if header == 'sm-Market_HeaderClosed ':
+                self.log.debug(f'expanding {country_name} tab ...')
                 time.sleep(0.5)  # necessary
                 country.click()
+
         except NoSuchElementException:
-            raise KeyError(f'{country_name} not found in countries table')
+            msg = f'{country_name} not found in countries table'
+            self.log.warning(msg)
+            raise KeyError(f'{msg}. Check the docs for a list of supported countries')
 
     def _league(self, league_name):
         try:
@@ -99,12 +112,17 @@ class Soccer(SpiderBet365):
             league = self.browser.find_element_by_xpath(xpath)
             league.click()
             self.league = league_name
+            self.log.debug(f'opened {league_name} page.')
+
         except NoSuchElementException:
-            raise KeyError(f'{league_name} not found in {self.country}')
+            msg = f'{league_name} not found in {self.country}'
+            self.log.warning(msg)
+            raise KeyError(f'{msg}. Check the docs for a list of supported leagues')
 
     def _matches(self, country, league):
         self._country(country)
         self._league(league)
+        self.log.info(f'start scraping: {country}, {league}')
         # scrape events
         events = []
         days = ('Sun ', 'Mon ', 'Tue ', 'Wed ', 'Thu ', 'Fri ', 'Sat ')
@@ -129,6 +147,8 @@ class Soccer(SpiderBet365):
                 'away_team': away_team,
             }
             events.append(event)
+        self.log.debug(' * got events data')
+
         # scrape odds
         k = len(events)
         odds = [{} for i in range(k)]
@@ -145,23 +165,33 @@ class Soccer(SpiderBet365):
         o = get_odds(0)
         for i, _1, _X, _2 in zip(range(k), o[:], o[k:-k], o[-k:]):
             odds[i]['full_time_result'] = {'1': _1, 'X': _X, '2': _2}
+        self.log.debug(' * got 1 x 2 odds')
+
         # market_double_chance
         o = get_odds(1)
         for i, _1X, _X2, _12 in zip(range(k), o[:], o[k:-k], o[-k:]):
             odds[i]['double_chance'] = {'1X': _1X, 'X2': _X2, '12': _12}
+        self.log.debug(' * got double chance odds')
+
         # market under_over_2.5
         o = get_odds(2)
         for i, over, under in zip(range(k), o[:k], o[k:]):
             odds[i]['under_over_2.5'] = {'under': under, 'over': over}
+        self.log.debug(' * got under/over 2.5 odds')
+
         # market both_teams_to_score
         o = get_odds(3)
         for i, yes, no in zip(range(k), o[:k], o[k:]):
             odds[i]['both_teams_to_score'] = {'yes': yes, 'no': no}
+        self.log.debug(' * got both teams to score odds')
+
         # market draw_no_bet
         o = get_odds(7)
         for i, _1, _2 in zip(range(k), o[:k], o[k:]):
             odds[i]['draw_no_bet'] = {'1': _1, '2': _2}
+        self.log.debug(' * got draw no bet odds')
 
+        self.log.info('finished the scrape')
         return events, odds
 
     def odds(self, country_std, league_std):
