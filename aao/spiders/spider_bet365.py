@@ -122,7 +122,7 @@ class Soccer(SpiderBet365):
     def _matches(self, country, league):
         self._country(country)
         self._league(league)
-        self.log.info(f'start scraping: {country}, {league}')
+        self.log.info(f'* start scraping: {country}, {league} *')
         # scrape events
         events = []
         days = ('Sun ', 'Mon ', 'Tue ', 'Wed ', 'Thu ', 'Fri ', 'Sat ')
