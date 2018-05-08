@@ -29,10 +29,9 @@ class Spider:
         self.log.setLevel(logging.DEBUG)
         # console handler
         if log_output:
-            print('asdkjnajksdhadjksajksdjkasdjkd')
             ch = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s',
-                                          '%H:%M:%S')
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(message)s', '%H:%M:%S')
             ch.setFormatter(formatter)
             ch.setLevel(logging.INFO)
             self.log.addHandler(ch)
