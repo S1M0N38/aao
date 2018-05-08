@@ -14,9 +14,9 @@ class SpiderBwin(Spider):
     with open(table_path) as f:
         table = json.load(f)
 
-    def __init__(self):
-        super().__init__()
-        self._soccer = Soccer(self.browser, self.table)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._soccer = Soccer(self.browser, self.log, self.table)
 
     @property
     def soccer(self):
@@ -26,8 +26,9 @@ class SpiderBwin(Spider):
 class Soccer(SpiderBwin):
     sportId = '4'
 
-    def __init__(self, browser, table):
+    def __init__(self, browser, log, table):
         self.browser = browser
+        self.log = log
         self.leagues_dict = table['soccer']['leagues']
 
     def odds(self, country, league):
@@ -35,7 +36,9 @@ class Soccer(SpiderBwin):
         odds = []
         leagueId = self.leagues_dict[country][league]
         if leagueId is None:
-            raise KeyError(f'{league} is not supported in {self.name}')
+            msg = f'{league} is not supported in {self.name}'
+            self.log.warning(msg)
+            raise KeyError(f'{msg}. Check the docs for a list of supported leagues')
 
         def request_page(markets, page_num):
             url = (f'{self.base_url}sportId={self.sportId}&leagueIds='
@@ -150,17 +153,21 @@ class Soccer(SpiderBwin):
                                 break
 
         # 25 -> events and full_time_result
+        self.log.info(f'* start scraping: {country}, {league} *')
         request_page('25', 0)
         events_and_full_time_result()
+        self.log.debug(f' * got events and full time result')
 
         # 31 -> under_over_2.5
         # 359 -> draw_no_bet
         # 190 -> double_chance
         # 261 -> both_team_to_score
         max_page_num = max_page()
+        self.log.debug(f'got total page number -> {max_page_num}')
         for i in range(max_page_num):
             request_page('25,359,31,190,261', i)
             time.sleep(3)
             parse_markets()
+            self.log.debug(f' * got markets odds, page {i}')
 
         return events, odds
