@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 
 from selenium import webdriver
@@ -6,8 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Spider:
-    def __init__(self, username=None, password=None, debug=False):
-        self.logging(debug)
+    def __init__(self, username=None, password=None, log_output=True,
+                 log_save=True):
+        self.logging(log_output, log_save)
         self.username = username
         self.password = password
         self.options = Options()
@@ -22,22 +24,26 @@ class Spider:
         self.log.debug(f'going to home page: {self.base_url}')
         self.browser.get(self.base_url)
 
-    def logging(self, debug):
+    def logging(self, log_output, log_save):
         self.log = logging.getLogger(self.name)
-        formatter = logging.Formatter('%(asctime)s-%(name)s-%(levelname)s-%(message)s')
         self.log.setLevel(logging.DEBUG)
         # console handler
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.ERROR)
-        if debug:
-            ch.setLevel(logging.DEBUG)
-        ch.setFormatter(formatter)
-        self.log.addHandler(ch)
+        if log_output:
+            print('asdkjnajksdhadjksajksdjkasdjkd')
+            ch = logging.StreamHandler()
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s',
+                                          '%H:%M:%S')
+            ch.setFormatter(formatter)
+            ch.setLevel(logging.INFO)
+            self.log.addHandler(ch)
         # file handler
-        log_file = f'log_{self.name}.log'
-        fh = logging.FileHandler(log_file)
-        fh.setFormatter(formatter)
-        self.log.addHandler(fh)
+        if log_save:
+            log_file = f'log_{self.name}.log'
+            fh = logging.FileHandler(log_file)
+            formatter = logging.Formatter(
+                '%(asctime)s-%(name)s-%(levelname)s-%(message)s')
+            fh.setFormatter(formatter)
+            self.log.addHandler(fh)
 
     def quit(self):
         self.browser.quit()

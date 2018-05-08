@@ -10,7 +10,7 @@ password = os.environ.get('PASS_BET365')
 class SpiderTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBet365(username, password)
+        self.s = SpiderBet365(username, password, log_output=False)
 
     @classmethod
     def tearDownClass(self):
@@ -46,7 +46,7 @@ class SoccerTest(unittest.TestCase):
         self.right_league = 'Italy Serie A'
         self.right_league_std = 'serie_a'
         self.not_supported_league_std = 'primavera_2_group_a'
-        self.s = SpiderBet365(username, password)
+        self.s = SpiderBet365(username, password, log_output=False)
 
     @classmethod
     def tearDownClass(self):
