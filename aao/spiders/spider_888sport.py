@@ -17,9 +17,9 @@ class Spider888sport(Spider):
     with open(table_path) as f:
         table = json.load(f)
 
-    def __init__(self):
-        super().__init__()
-        self._soccer = Soccer(self.browser, self.table)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._soccer = Soccer(self.browser, self.log, self.table)
 
     @property
     def soccer(self):
@@ -28,9 +28,12 @@ class Spider888sport(Spider):
 
 class Soccer(Spider888sport):
 
-    def __init__(self, browser, table):
+    def __init__(self, browser, log, table):
         self.browser = browser
+        self.log = log
+        self.log.debug('loading countries table ...')
         self.countries_dict = table['soccer']['countries']
+        self.log.debug('loading leagues table ...')
         self.leagues_dict = table['soccer']['leagues']
 
     def _change_market(self, market):
@@ -65,22 +68,27 @@ class Soccer(Spider888sport):
         league = self.leagues_dict[country_std][league_std]
         country = self.countries_dict[country_std]
         if league is None:
-            raise KeyError(f'{league} is not supported in {self.name}')
+            msg = f'{league} is not supported in {self.name}'
+            self.log.warning(msg)
+            raise KeyError(f'{msg}. Check the docs for a list of supported leagues')
 
         # get the page
+        self.log.debug(f'requesting page {country}, {league}')
         self.browser.get(
             f'{self.base_url}#/filter/football/{country}/{league}')
         time.sleep(4)  # to improve
 
         # expands the closed panes
+        self.log.debug(f'opening closed panes ...')
         close_panes = self.browser.find_elements_by_xpath(
             '//div[@class="KambiBC-collapsible-container '
             'KambiBC-mod-event-group-container"]')
         [pane.click() for pane in close_panes]
-
         panes = self.browser.find_elements_by_xpath(
             '//div[@class="KambiBC-collapsible-container '
             'KambiBC-mod-event-group-container KambiBC-expanded"]')
+
+        self.log.info(f'* start scraping: {country}, {league} *')
 
         # parse events, full time result and under over
         for pane in panes:
@@ -129,6 +137,9 @@ class Soccer(Spider888sport):
                 }
                 odds.append(odd)
                 events.append(event)
+        self.log.debug(' * got events data')
+        self.log.debug(' * got 1 x 2 odds')
+        self.log.debug(' * got under/over 2.5 odds')
 
         # scrape draw no bet
         self._change_market('Draw No Bet')
@@ -142,6 +153,7 @@ class Soccer(Spider888sport):
                 odds[i]['draw_no_bet'] = {'1': _1, '2': _2}
             except IndexError:
                 pass
+        self.log.debug(' * got draw no bet odds')
 
         # scrape both teams to score
         self._change_market('Both Teams To Score')
@@ -155,6 +167,7 @@ class Soccer(Spider888sport):
                 odds[i]['both_teams_to_score'] = {'yes': no, 'no': no}
             except IndexError:
                 pass
+        self.log.debug(' * got both teams to score odds')
 
         # scrape double chance
         self._change_market('Double Chance')
@@ -170,5 +183,7 @@ class Soccer(Spider888sport):
                 odds[i]['double_chance'] = {'1X': _1X, 'X2': _X2, '12': _12}
             except IndexError:
                 pass
+        self.log.debug(' * got double chance odds')
 
+        self.log.info('finished the scrape')
         return events, odds
