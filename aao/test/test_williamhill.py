@@ -6,7 +6,7 @@ from aao.spiders.spider_williamhill import SpiderWilliamhill
 class SpiderTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.s = SpiderWilliamhill()
+        self.s = SpiderWilliamhill(log_output=False)
 
     @classmethod
     def tearDownClass(self):
@@ -28,7 +28,7 @@ class SoccerTest(unittest.TestCase):
         self.wrong_league = 'this_league_does_not_exixts'
         self.right_league_std = 'serie_a'
         self.not_supported_league_std = 'primavera_2_group_a'
-        self.s = SpiderWilliamhill()
+        self.s = SpiderWilliamhill(log_output=False)
 
     @classmethod
     def tearDownClass(self):

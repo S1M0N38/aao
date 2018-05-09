@@ -17,22 +17,24 @@ class SpiderWilliamhill(Spider):
     with open(table_path) as f:
         table = json.load(f)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.start_session()
-        self._soccer = Soccer(self.browser, self.table)
+        self._soccer = Soccer(self.browser, self.log, self.table)
 
     def start_session(self):
+        self.log.info('starting new session ...')
         self.homepage()
         popup = self.browser.find_element_by_id('popupMain')
         popup.find_element_by_class_name('linkable').click()
         select = Select(popup.find_element_by_id('time_zone'))
         select.select_by_value("1")  # 1 -> London timezone
         popup.find_element_by_id('yesBtn').click()
-        pass
+        self.log.debug('set London timezone')
 
     @property
     def soccer(self):
+        self.log.debug('opening soccer page ...')
         self.browser.get(
             f'{self.base_url}bet/en-gb/betting/y/5/et/Football.html')
         return self._soccer
@@ -40,9 +42,12 @@ class SpiderWilliamhill(Spider):
 
 class Soccer(SpiderWilliamhill):
 
-    def __init__(self, browser, table):
+    def __init__(self, browser, log, table):
         self.browser = browser
+        self.log = log
+        self.log.debug('loading countries table ...')
         self.countries_dict = table['soccer']['countries']
+        self.log.debug('loading leagues table ...')
         self.leagues_dict = table['soccer']['leagues']
 
     def _country_league(self, country, league):
@@ -51,25 +56,32 @@ class Soccer(SpiderWilliamhill):
             page_link = table.find_element_by_xpath(
                 f'//h3["{country}"=text()]/../ul/li/a["{league}"=text()]')
         except NoSuchElementException:
-            raise KeyError(f'Not found the page for {country} - {league}')
+            msg = f'Not found the page for {country} - {league}'
+            self.log.warning(msg)
+            raise KeyError(f'{msg}. Check the docs for a list of supported countries/leagues')
         page_link.click()
 
     def odds(self, country_std, league_std):
         league = self.leagues_dict[country_std][league_std]
         country = self.countries_dict[country_std]
         if league is None:
-            raise KeyError(f'{league_std} is not supported in {self.name}')
+            msg = f'{league_std} is not supported in {self.name}'
+            self.log.warning(msg)
+            raise KeyError(f'{msg}. Check the docs for a list of supported leagues')
 
         events = []
         odds = []
         events_id = []
 
         # open the league page
+        self.log.debug(f'requesting page {country}, {league}')
         self._country_league(country, league)
         # change the odds format to deciaml
         select = Select(self.browser.find_element_by_id('oddsSelect'))
         select.select_by_value("DECIMAL")
+        self.log.debug('set odds format to decimal')
 
+        self.log.info(f'* start scraping: {country}, {league} *')
         # parse events and full time result
         full_time_result = self.browser.find_element_by_xpath(
             '//table[@class="tableData"]//span'
@@ -104,6 +116,8 @@ class Soccer(SpiderWilliamhill):
             }
             events.append(event)
             odds.append(odd)
+        self.log.debug(' * got events data')
+        self.log.debug(' * got 1 x 2 odds')
 
         # parse double chance
         self.browser.find_element_by_xpath(
@@ -118,6 +132,7 @@ class Soccer(SpiderWilliamhill):
             _1X, _X2, _12 = data[4].text, data[5].text, data[6].text
             odds[i]['double_chance'] = {
                 '1X': float(_1X), 'X2': float(_X2), '12': float(_12)}
+        self.log.debug(' * got double chance odds')
 
         # parse draw no bet
         self.browser.find_element_by_xpath(
@@ -132,6 +147,7 @@ class Soccer(SpiderWilliamhill):
             _1, _2 = data[3].text, data[5].text
             odds[i]['draw_no_bet'] = {
                 '1': float(_1), '2': float(_2)}
+        self.log.debug(' * got draw no bet odds')
 
         # parse both team to score
         self.browser.find_element_by_xpath(
@@ -146,6 +162,7 @@ class Soccer(SpiderWilliamhill):
             yes, no = data[4].text, data[5].text
             odds[i]['both_team_to_score'] = {
                 'yes': float(yes), 'no': float(no)}
+        self.log.debug(' * got both teams to score odds')
 
         # parse under over 2.5
         self.browser.find_element_by_xpath(
@@ -163,5 +180,7 @@ class Soccer(SpiderWilliamhill):
                 u, o = data[3].text, data[5].text
                 odds[i]['under_over_2.5'] = {
                     'under': float(u), 'over': float(o)}
+        self.log.debug(' * got under/over 2.5 odds')
 
+        self.log.info('finished the scrape')
         return events, odds
