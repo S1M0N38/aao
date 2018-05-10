@@ -13,10 +13,6 @@ from .spider import Spider
 class SpiderBet365(Spider):
     name = 'bet365'
     base_url = 'https://www.bet365.com/'
-    file_path = os.path.dirname(__file__)
-    table_path = os.path.join(file_path, 'tables', f'{name}.json')
-    with open(table_path) as f:
-        table = json.load(f)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -63,7 +59,6 @@ class SpiderBet365(Spider):
         password_box_hidden.send_keys(self.password)
         submit_button.click()
         self.browser.find_element_by_class_name('hm-UserName_UserNameShown')
-        # close the pop up that ask to confirm the identity
         self.log.debug('closing the confermation-identity pop up ...')
         time.sleep(2)
         self.browser.get(self.base_url)

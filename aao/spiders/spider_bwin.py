@@ -9,10 +9,6 @@ from .spider import Spider
 class SpiderBwin(Spider):
     name = 'bwin'
     base_url = 'https://sports.bwin.com/en/sports#'
-    file_path = os.path.dirname(__file__)
-    table_path = os.path.join(file_path, 'tables', f'{name}.json')
-    with open(table_path) as f:
-        table = json.load(f)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
