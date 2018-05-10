@@ -71,10 +71,9 @@ class SpiderBet365(Spider):
 
     @property
     def soccer(self):
-        xpath = '//div[@class="wn-Classification "][text()="Soccer"]'
-        is_soccer_close = self.browser.find_elements_by_xpath(xpath)
-        if is_soccer_close:
-            is_soccer_close[0].click()
+        xpath = '//div[contains(@class, "wn-Classification ")][text()="Soccer"]'
+        soccer_btn = self.browser.find_element_by_xpath(xpath)
+        soccer_btn.click()
         self.log.debug('opening soccer page ...')
         return self._soccer
 
@@ -186,7 +185,7 @@ class Soccer(SpiderBet365):
         self.log.debug(' * got both teams to score odds')
 
         # market draw_no_bet
-        o = get_odds(7)
+        o = get_odds(9)
         for i, _1, _2 in zip(range(k), o[:k], o[k:]):
             odds[i]['draw_no_bet'] = {'1': _1, '2': _2}
         self.log.debug(' * got draw no bet odds')
