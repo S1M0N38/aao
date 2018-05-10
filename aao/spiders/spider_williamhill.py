@@ -16,7 +16,7 @@ class SpiderWilliamhill(Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_session()
-        self._soccer = Soccer(self.browser, self.log, self.table)
+        self._soccer = Soccer(self)
 
     def start_session(self):
         self.log.info('starting new session ...')
@@ -38,13 +38,14 @@ class SpiderWilliamhill(Spider):
 
 class Soccer(SpiderWilliamhill):
 
-    def __init__(self, browser, log, table):
-        self.browser = browser
-        self.log = log
+    def __init__(self, other):
+        self.browser = other.browser
+        self.log = other.log
+        self.table = other.table
         self.log.debug('loading countries table ...')
-        self.countries_dict = table['soccer']['countries']
+        self.countries_dict = self.table['soccer']['countries']
         self.log.debug('loading leagues table ...')
-        self.leagues_dict = table['soccer']['leagues']
+        self.leagues_dict = self.table['soccer']['leagues']
 
     def _country_league(self, country, league):
         table = self.browser.find_element_by_class_name('listContainer')

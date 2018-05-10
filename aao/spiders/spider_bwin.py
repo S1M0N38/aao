@@ -12,7 +12,7 @@ class SpiderBwin(Spider):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._soccer = Soccer(self.browser, self.log, self.table)
+        self._soccer = Soccer(self)
 
     @property
     def soccer(self):
@@ -22,10 +22,12 @@ class SpiderBwin(Spider):
 class Soccer(SpiderBwin):
     sportId = '4'
 
-    def __init__(self, browser, log, table):
-        self.browser = browser
-        self.log = log
-        self.leagues_dict = table['soccer']['leagues']
+    def __init__(self, other):
+        self.browser = other.browser
+        self.log = other.log
+        self.table = other.table
+        self.log.debug('loading leagues table ...')
+        self.leagues_dict = self.table['soccer']['leagues']
 
     def odds(self, country, league):
         events = []

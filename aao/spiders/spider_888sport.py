@@ -15,7 +15,7 @@ class Spider888sport(Spider):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._soccer = Soccer(self.browser, self.log, self.table)
+        self._soccer = Soccer(self)
 
     @property
     def soccer(self):
@@ -24,13 +24,14 @@ class Spider888sport(Spider):
 
 class Soccer(Spider888sport):
 
-    def __init__(self, browser, log, table):
-        self.browser = browser
-        self.log = log
+    def __init__(self, other):
+        self.browser = other.browser
+        self.log = other.log
+        self.table = other.table
         self.log.debug('loading countries table ...')
-        self.countries_dict = table['soccer']['countries']
+        self.countries_dict = self.table['soccer']['countries']
         self.log.debug('loading leagues table ...')
-        self.leagues_dict = table['soccer']['leagues']
+        self.leagues_dict = self.table['soccer']['leagues']
 
     def _change_market(self, market):
         current_market = self.browser.find_element_by_xpath(
