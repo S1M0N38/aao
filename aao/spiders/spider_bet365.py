@@ -17,18 +17,18 @@ class SpiderBet365(Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_session()
-        self._soccer = Soccer(self.browser, self.log, self.table)
+        self._soccer = Soccer(self)
 
     def start_session(self):
         self.log.info('starting new session ...')
         self.homepage()
         lang = '//ul[@class="lpnm"]/li/a'
         lang_bt = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
-        time.sleep(2)
+        time.sleep(3)
         lang_bt.click()
         if 'lng' not in self.browser.current_url:
             lang_bt = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
-            time.sleep(2)
+            time.sleep(3)
             lang_bt.click()
         self.log.debug('set english language')
         self.login()
@@ -60,7 +60,7 @@ class SpiderBet365(Spider):
         submit_button.click()
         self.browser.find_element_by_class_name('hm-UserName_UserNameShown')
         self.log.debug('closing the confermation-identity pop up ...')
-        time.sleep(2)
+        time.sleep(3)
         self.browser.get(self.base_url)
         self.log.info(f'logged in with {self.username}')
 
@@ -75,13 +75,14 @@ class SpiderBet365(Spider):
 
 class Soccer(SpiderBet365):
 
-    def __init__(self, browser, log, table):
-        self.browser = browser
-        self.log = log
+    def __init__(self, other):
+        self.browser = other.browser
+        self.log = other.log
+        self.table = other.table
         self.log.debug('loading countries table ...')
-        self.countries_dict = table['soccer']['countries']
+        self.countries_dict = self.table['soccer']['countries']
         self.log.debug('loading leagues table ...')
-        self.leagues_dict = table['soccer']['leagues']
+        self.leagues_dict = self.table['soccer']['leagues']
 
     def _country(self, country_name):
         try:
@@ -91,7 +92,7 @@ class Soccer(SpiderBet365):
             header = country.find_element_by_xpath('..').get_attribute('class')
             if header == 'sm-Market_HeaderClosed ':
                 self.log.debug(f'expanding {country_name} tab ...')
-                time.sleep(0.5)  # necessary
+                time.sleep(1)  # necessary
                 country.click()
 
         except NoSuchElementException:
@@ -104,6 +105,7 @@ class Soccer(SpiderBet365):
             xpath = (f'//div[@class="sm-Market "]//div[text()="{self.country}"]'
                      f'/../..//div[text()="{league_name}"]')
             league = self.browser.find_element_by_xpath(xpath)
+            time.sleep(1)
             league.click()
             self.league = league_name
             self.log.debug(f'opened {league_name} page.')
