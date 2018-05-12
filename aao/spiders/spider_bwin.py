@@ -1,7 +1,7 @@
 from datetime import datetime as dt
-import json
-import os
-import time
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
 from .spider import Spider
 
@@ -26,6 +26,7 @@ class Soccer(SpiderBwin):
         self.browser = other.browser
         self.log = other.log
         self.table = other.table
+        self.wait = other.wait
         self.log.debug('loading leagues table ...')
         self.leagues_dict = self.table['soccer']['leagues']
 
@@ -164,7 +165,8 @@ class Soccer(SpiderBwin):
         self.log.debug(f'got total page number -> {max_page_num}')
         for i in range(max_page_num):
             request_page('25,359,31,190,261', i)
-            time.sleep(3)
+            self.wait.until(EC.text_to_be_present_in_element(
+                (By.CLASS_NAME, 'active-page-link'), str(i+1)))
             parse_markets()
             self.log.debug(f' * got markets odds, page {i}')
 
