@@ -1,7 +1,4 @@
 from datetime import datetime as dt
-import json
-import os
-import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -28,6 +25,7 @@ class Soccer(Spider888sport):
         self.browser = other.browser
         self.log = other.log
         self.table = other.table
+        self.wait = other.wait
         self.log.debug('loading countries table ...')
         self.countries_dict = self.table['soccer']['countries']
         self.log.debug('loading leagues table ...')
@@ -41,11 +39,13 @@ class Soccer(Spider888sport):
         self.browser.execute_script("window.scrollTo(0, -100)")
         dropdown = self.browser.find_element_by_xpath(
             '//div[@class="KambiBC-mod-event-bet-offer-category-selection"]')
+        self.wait.until(EC.visibility_of(dropdown))
+        self.wait.until(EC.element_to_be_clickable((By.TAG_NAME, 'header')))
         dropdown_btn = dropdown.find_element_by_tag_name('header')
-        time.sleep(0.5)
         dropdown_btn.click()
         dropdown.find_element_by_xpath(f'//li[text()="{market}"]').click()
-        time.sleep(1)  # to improve
+        self.wait.until(EC.visibility_of_all_elements_located(
+            (By.CLASS_NAME, 'KambiBC-mod-outcome__odds')))
 
     def _get_rows(self):
         rows = []
@@ -73,7 +73,8 @@ class Soccer(Spider888sport):
         self.log.debug(f'requesting page {country}, {league}')
         self.browser.get(
             f'{self.base_url}#/filter/football/{country}/{league}')
-        time.sleep(4)  # to improve
+        self.wait.until(EC.visibility_of_all_elements_located(
+            (By.CLASS_NAME, 'KambiBC-mod-event-group-header__title-inner')))
 
         # expands the closed panes
         self.log.debug(f'opening closed panes ...')
