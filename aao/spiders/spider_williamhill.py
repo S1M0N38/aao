@@ -1,7 +1,4 @@
 from datetime import datetime as dt
-import json
-import os
-import time
 
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
