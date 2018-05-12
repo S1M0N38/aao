@@ -5,14 +5,13 @@ import os
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as chrome_options
-# from selenium.webdriver.firefox.options import Options as firefox_options
 from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Spider:
     def __init__(self, username=None, password=None, log_level_console='INFO',
-                 log_level_file='DEBUG', browser='CHROME', explicit_wait=10,
-                 implicitly_wait=8):
+                 log_level_file='DEBUG', browser='CHROME', explicit_wait=4,
+                 implicitly_wait=3):
 
         self.config = {
             'log_level_console': log_level_console,
@@ -59,11 +58,10 @@ class Spider:
             browser = webdriver.Chrome(options=options)
             browser.implicitly_wait(self.config['implicitly_wait'])
             return browser
-        if self.config['browser'] == 'FIREFOX':
-            pass
+        # add other browser
         else:
             raise KeyError(
-                'browser name error: choose form "CHROME", "FIREFOX"')
+                'browser name error: choose form "CHROME"')
 
     def get_table(self):
         file_path = os.path.dirname(__file__)

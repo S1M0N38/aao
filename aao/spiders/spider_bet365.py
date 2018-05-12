@@ -44,9 +44,8 @@ class SpiderBet365(Spider):
 
     def login(self):
         self.log.debug(f'trying to log using {self.username} ...')
-        boxes = '//input[@class="hm-Login_InputField "]'
-        self.wait.until(EC.visibility_of_all_elements_located((By.XPATH, boxes)))
-        username_box, password_box = self.browser.find_elements_by_xpath(boxes)
+        username_box, password_box = self.browser.find_elements_by_xpath(
+            '//input[@class="hm-Login_InputField "]')
         password_box_hidden = self.browser.find_element_by_xpath(
             '//input[@class="hm-Login_InputField Hidden "]')
         submit_button = self.browser.find_element_by_class_name(
