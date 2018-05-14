@@ -4,7 +4,9 @@
         "countries": {
             "england": "United Kingdom",
             "italy": "Italy",
-            "spain": "Spain"
+            "spain": "Spain",
+            "test_country_foo": "foo_country",
+            "test_country_null": null
         },
 
         "leagues": {
@@ -74,7 +76,13 @@
                 "copa_federacion": null,
                 "super_cup": null,
                 "copa_de_la_reina_women": null
-            }
+            },
+
+        "test_country_foo": {
+            "test_league_foo": "foo_league",
+            "test_league_null": null
+        }
+
         }
 
     }
