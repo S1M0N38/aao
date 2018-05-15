@@ -11,8 +11,8 @@ class SpiderBet365(Spider):
     name = 'bet365'
     base_url = 'https://www.bet365.com/'
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, username, password, *args, **kwargs):
+        super().__init__(username, password, *args, **kwargs)
         self.start_session()
         self._soccer = Soccer(self)
 
@@ -32,7 +32,8 @@ class SpiderBet365(Spider):
         self.change_odds_format('Decimal')
 
     def change_odds_format(self, format_):
-        # three formats possible: Fractional, Decimal, American
+        # three formats possible: Fractional, Decimal, American. The format
+        # had to be switch to 'Decimal' due to the future type conversion
         dropdown = '//div[@class="hm-OddsDropDownSelections hm-DropDownSelections "]'
         type_ = (f'//div[@class="hm-DropDownSelections_ContainerInner "]'
                  f'/a[text() = "{format_}"]')
@@ -126,10 +127,7 @@ class Soccer(SpiderBet365):
             self.log.warning(msg)
             raise KeyError(msg)
 
-    def _matches(self):
-        self.log.info(
-            f'* start scraping: {self.country_std} - {self.league_std} *')
-        # scrape events
+    def _events(self) -> list:
         events = []
         days = ('Sun ', 'Mon ', 'Tue ', 'Wed ', 'Thu ', 'Fri ', 'Sat ')
         rows = self.browser.find_elements_by_xpath(
@@ -154,48 +152,50 @@ class Soccer(SpiderBet365):
             }
             events.append(event)
         self.log.debug(' * got events data')
+        return events
 
-        def get_odds(index_):
-            self.browser.find_element_by_class_name(
-                'cm-CouponMarketGroup_ChangeMarket').click()
-            self.browser.find_elements_by_class_name(
-                'wl-DropDownItem')[index_].click()
-            xpath_odds = '//span[@class="gl-ParticipantOddsOnly_Odds"]'
-            o = self.browser.find_elements_by_xpath(xpath_odds)
-            return [float(i.text) for i in o]
+    def _markets(self, type_) -> list:
+        market_btn = self.wait.until(EC.element_to_be_clickable(
+            (By.CLASS_NAME, 'cm-CouponMarketGroup_ChangeMarket')))
+        market_btn.click()
+        xpath = f'//div[@class="wl-DropDown_Inner "]//div[text()="{type_}"]'
+        market = self.wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
+        market.click()
+        xpath_odds = '//span[@class="gl-ParticipantOddsOnly_Odds"]'
+        o = self.browser.find_elements_by_xpath(xpath_odds)
+        return [float(i.text) for i in o]
 
-        # scrape odds
+    def _matches(self) -> tuple:
+        self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
+        # scrape events data
+        events = self._events()
+        # scrape markets data
         k = len(events)
         odds = [{} for i in range(k)]
-        # market_1X2
-        o = get_odds(0)
+        o = self._markets('Full Time Result')
         for i, _1, _X, _2 in zip(range(k), o[:], o[k:-k], o[-k:]):
             odds[i]['full_time_result'] = {'1': _1, 'X': _X, '2': _2}
         self.log.debug(' * got 1 x 2 odds')
-        # market_double_chance
-        o = get_odds(1)
+        o = self._markets('Double Chance')
         for i, _1X, _X2, _12 in zip(range(k), o[:], o[k:-k], o[-k:]):
             odds[i]['double_chance'] = {'1X': _1X, 'X2': _X2, '12': _12}
         self.log.debug(' * got double chance odds')
-        # market under_over_2.5
-        o = get_odds(2)
+        o = self._markets('Goals Over/Under')
         for i, over, under in zip(range(k), o[:k], o[k:]):
             odds[i]['under_over_2.5'] = {'under': under, 'over': over}
         self.log.debug(' * got under/over 2.5 odds')
-        # market both_teams_to_score
-        o = get_odds(3)
+        o = self._markets('Both Teams to Score')
         for i, yes, no in zip(range(k), o[:k], o[k:]):
             odds[i]['both_teams_to_score'] = {'yes': yes, 'no': no}
         self.log.debug(' * got both teams to score odds')
-        # market draw_no_bet
-        o = get_odds(7)
+        o = self._markets('Draw No Bet')
         for i, _1, _2 in zip(range(k), o[:k], o[k:]):
             odds[i]['draw_no_bet'] = {'1': _1, '2': _2}
         self.log.debug(' * got draw no bet odds')
-        self.log.info('finished the scrape')
+        self.log.info('* finished the scrape *')
         return events, odds
 
-    def odds(self, country_std: str, league_std: str):
+    def odds(self, country_std: str, league_std: str) -> tuple:
         msg_to_docs = 'Check the docs for a list of supported competitions'
         try:
             self.country_std = country_std
