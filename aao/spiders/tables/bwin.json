@@ -1,6 +1,14 @@
 {
     "soccer": {
 
+        "countries": {
+            "england": "england",
+            "italy": "italy",
+            "spain": "spain",
+            "test_country_foo": "foo_country",
+            "test_country_null": null
+        },
+
         "leagues": {
 
             "england":{
@@ -68,8 +76,13 @@
                 "copa_federacion": "24737",
                 "super_cup": null,
                 "copa_de_la_reina_women": null
-            }
-        }
+            },
 
+            "test_country_foo": {
+                "test_league_foo": "999",
+                "test_league_null": null
+            }
+
+        }
     }
 }
