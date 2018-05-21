@@ -115,15 +115,16 @@ class Soccer(SpiderBet365):
 
     def _league(self):
         try:
-            xpath = (f'//div[@class="sm-Market "]//div[text()="{self.country}"]'
-                     f'/../..//div[text()="{self.league}"]')
+            xpath = (f'//div[@class="sm-Market "]/div/div[text()='
+                     f'"{self.country}"]/../..//div[@class="sm-'
+                     f'CouponLink_Label " and text()="World Cup 2018"]')
             league = self.browser.find_element_by_xpath(xpath)
             league = self.wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
             league.click()
             self.log.debug(f'opened {self.league_std} page.')
         except NoSuchElementException:
             msg = (f'{self.league_std} not found on {self.name} site, it '
-                   f'seams that not odds are avaiable for this country.')
+                   f'seams that not odds are avaiable for this league.')
             self.log.warning(msg)
             raise KeyError(msg)
 
@@ -151,7 +152,6 @@ class Soccer(SpiderBet365):
                 'away_team': away_team,
             }
             events.append(event)
-        self.log.debug(' * got events data')
         return events
 
     def _markets(self, type_) -> list:
@@ -166,9 +166,12 @@ class Soccer(SpiderBet365):
         return [float(i.text) for i in o]
 
     def _matches(self) -> tuple:
+        self._country()
+        self._league()
         self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
         # scrape events data
         events = self._events()
+        self.log.debug(' * got events data')
         # scrape markets data
         k = len(events)
         odds = [{} for i in range(k)]
@@ -219,8 +222,6 @@ class Soccer(SpiderBet365):
             msg = f'{country_std} - {league_std} not supported in {self.name}'
             self.log.error(msg)
             raise KeyError(f'{msg}. {msg_to_docs}')
-        self._country()
-        self._league()
         events, odds = self._matches()
         return events, odds
 

@@ -45,14 +45,14 @@ class SoccerTest(unittest.TestCase):
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'
         self.country_foo = 'test_country_foo'
-        self.country_std = 'italy'
-        self.country = 'Italy'
+        self.country_std = 'world_cup_2018'
+        self.country = 'World Cup 2018'
         # league
         self.league_not_exists = 'this_league_does_not_exixts'
         self.league_null = 'test_league_null'
         self.league_foo = 'test_league_foo'
-        self.league_std = 'serie_a'
-        self.league = 'Italy Serie A'
+        self.league_std = 'world_cup_2018'
+        self.league = 'World Cup 2018'
 
     @classmethod
     def tearDownClass(self):
@@ -85,7 +85,7 @@ class SoccerTest(unittest.TestCase):
         self.assertIn(msg, str(context.exception))
 
     def test_country_and_league_not_found(self):
-        msg_ = 'it seams that not odds are avaiable for this country.'
+        msg_ = 'it seams that not odds are avaiable for this'
         # when there aren't avaible odds in a country, it isn't shown anymore
         # but in spider table it appeare as supported and avaiable
         with self.assertRaises(KeyError) as context:

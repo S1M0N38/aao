@@ -5,6 +5,7 @@
             "england": "United Kingdom",
             "italy": "Italy",
             "spain": "Spain",
+            "world_cup_2018": "World Cup 2018",
             "test_country_foo": "foo_country",
             "test_country_null": null
         },
@@ -78,12 +79,15 @@
                 "copa_de_la_reina_women": null
             },
 
-        "test_country_foo": {
-            "test_league_foo": "foo_league",
-            "test_league_null": null
-        }
+            "world_cup_2018": {
+                "world_cup_2018": "World Cup 2018"
+            },
+
+            "test_country_foo": {
+                "test_league_foo": "foo_league",
+                "test_league_null": null
+            }
 
         }
-
     }
 }
