@@ -28,14 +28,14 @@ class SoccerTest(unittest.TestCase):
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'
         self.country_foo = 'test_country_foo'
-        self.country_std = 'italy'
-        self.country = 'italy'
+        self.country_std = 'world_cup_2018'
+        self.country = 'world_cup_2018'
         # league
         self.league_not_exists = '999'  # remenber bwin store league as ids
         self.league_null = 'test_league_null'
         self.league_foo = 'test_league_foo'
-        self.league_std = 'serie_a'
-        self.league = '42'
+        self.league_std = 'group_a'
+        self.league = '63154'
         # page request params
         self.wrong_page_num = 999
         self.market_id_not_supported = ('25', '10', '1')
