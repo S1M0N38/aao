@@ -77,9 +77,7 @@ class Soccer(SpiderBwin):
             num = 0
         return num
 
-    def _events_and_full_time_result(self) -> tuple:
-        events = []
-        odds = []
+    def _parse_events_and_full_time_result(self):
         xpath = ('//div[@class="marketboard-event-group__item-container '
                  'marketboard-event-group__item-container--level-2"]')
         data = self.wait.until(EC.visibility_of_element_located(
@@ -92,8 +90,13 @@ class Soccer(SpiderBwin):
                 'marketboard-event-group__item--event')
             for row in rows:
                 class_name = 'marketboard-event-without-header__market-time'
-                time_str = self.wait.until(EC.visibility_of_element_located(
-                    (By.CLASS_NAME, class_name))).text
+                try:
+                    time_str = self.wait.until(EC.visibility_of_element_located(
+                        (By.CLASS_NAME, class_name))).text
+                except TimeoutException:
+                    msg = f'no data found for {self.league_std}'
+                    self.log.error(msg)
+                    raise KeyError(f'{msg}. It seems league does not have odds')
                 dt_str = f'{date} {time_str}'
                 datetime = dt.strptime(dt_str, '%m/%d/%Y %I:%M %p')
                 timestamp = int(dt.timestamp(datetime))
@@ -116,13 +119,10 @@ class Soccer(SpiderBwin):
                         '2': float(_2)
                     }
                 }
-                events.append(event)
-                odds.append(odd)
-        return events, odds
+                self._events.append(event)
+                self._odds.append(odd)
 
-    def _parse_markets(self, events, odds) -> list:
-        home_teams = [i['home_team'] for i in events]
-        away_teams = [i['away_team'] for i in events]
+    def _parse_markets(self):
         data = self.browser.find_elements_by_xpath(
             ('//div[@class="marketboard-event-group__item-container '
              'marketboard-event-group__item-container--level-2"]'))
@@ -137,12 +137,11 @@ class Soccer(SpiderBwin):
                 home_team, away_team = mat_header.text.split(' - ')
                 away_team = ' '.join(away_team.split(' ')[:-2])
                 # finds index of the events row
-                home_team_i = home_teams.index(home_team)
-                away_team_i = away_teams.index(away_team)
-                if home_team_i != away_team_i:
-                    raise ValueError(
-                        f'home_team_index {home_team_i} and '
-                        f'away_team_index {away_team_i} are not the same')
+                for i, event in enumerate(self._events):
+                    if event["home_team"] == home_team and \
+                       event["away_team"] == away_team:
+                        index_order = i
+                        break
                 rows = match.find_elements_by_tag_name('div')
                 header_row = None
                 for i, row in enumerate(rows):
@@ -151,32 +150,33 @@ class Soccer(SpiderBwin):
                         header_row = row.text
                     if 'Draw no bet' == header_row:
                         _, _1, _, _2 = rows[i+1].text.split('\n')
-                        odds[home_team_i]['draw_no_bet'] = {
+                        self._odds[index_order]['draw_no_bet'] = {
                             '1': float(_1), '2': float(_2)}
                         break
                     if 'Both Teams to Score' == header_row:
                         _, yes, _, no = rows[i+1].text.split('\n')
-                        odds[home_team_i]['both_team_to_score'] = {
+                        self._odds[index_order]['both_team_to_score'] = {
                             'yes': float(yes), 'no': float(no)}
                         break
                     if 'Double Chance' == header_row:
                         _, _1X, _, _X2, _, _12 = rows[i+1].text.split('\n')
-                        odds[home_team_i]['double_chance'] = {
+                        self._odds[index_order]['double_chance'] = {
                             '1X': float(_1X), 'X2': float(_X2), '12': float(_12)}
                         break
                     if 'Total Goals - Over/Under' == header_row:
                         if ("Over 2,5" and "Under 2,5") in row.text:
                             _, o, _, u = row.text.split('\n')
-                            odds[home_team_i]['under_over_2.5'] = {
+                            self._odds[index_order]['under_over_2.5'] = {
                                 'under': float(u), 'over': float(o)}
                             break
-        return odds
 
     def _matches(self) -> tuple:
         self.log.info(f'* scraping: {self.country_std}, {self.league_std} *')
+        self._events = []
+        self._odds = []
         # scrape events data and 1 x 2 odds
         self._request_page(['25'], 0)
-        events, odds = self._events_and_full_time_result()
+        self._parse_events_and_full_time_result()
         self.log.debug(' * got events data')
         self.log.debug(' * got 1 x 2 odds')
         # scrape odds data
@@ -184,10 +184,10 @@ class Soccer(SpiderBwin):
         self.log.debug(f'got total page number -> {max_page_num}')
         for page_num in range(max_page_num):
             self._request_page(['25', '359', '31', '190', '261'], page_num)
-            odds = self._parse_markets(events, odds)
+            self._parse_markets()
             self.log.debug(f' * got markets odds, page {page_num}')
         self.log.info('* finished the scrape *')
-        return events, odds
+        return self._events, self._odds
 
     def odds(self, country_std: str, league_std: str) -> tuple:
         msg_to_docs = 'Check the docs for a list of supported competitions'
