@@ -128,7 +128,7 @@ class Soccer(SpiderBet365):
             self.log.warning(msg)
             raise KeyError(msg)
 
-    def _events(self) -> list:
+    def _get_events(self) -> list:
         events = []
         days = ('Sun ', 'Mon ', 'Tue ', 'Wed ', 'Thu ', 'Fri ', 'Sat ')
         rows = self.browser.find_elements_by_xpath(
@@ -154,49 +154,58 @@ class Soccer(SpiderBet365):
             events.append(event)
         return events
 
-    def _markets(self, type_) -> list:
+    def _get_market(self, type_) -> tuple:
         market_btn = self.wait.until(EC.element_to_be_clickable(
             (By.CLASS_NAME, 'cm-CouponMarketGroup_ChangeMarket')))
         market_btn.click()
         xpath = f'//div[@class="wl-DropDown_Inner "]//div[text()="{type_}"]'
         market = self.wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
         market.click()
+        events = self._get_events()
         xpath_odds = '//span[@class="gl-ParticipantOddsOnly_Odds"]'
-        o = self.browser.find_elements_by_xpath(xpath_odds)
-        return [float(i.text) for i in o]
+        odds = self.browser.find_elements_by_xpath(xpath_odds)
+        odds = [float(o.text) for o in odds]
+        odds = [odds[i:i+len(events)] for i in range(0, len(odds), len(events))]
+        assert all(len(events) == len(column) for column in odds)
+        assert self._events >= events
+        index_order = []
+        for temp_event in events:
+            for i, event in enumerate(self._events):
+                if event["home_team"] == temp_event["home_team"] and \
+                   event["away_team"] == temp_event["away_team"]:
+                    index_order.append(i)
+                    continue
+        return odds, index_order
 
     def _matches(self) -> tuple:
         self._country()
         self._league()
         self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
-        # scrape events data
-        events = self._events()
+        self._events = self._get_events()
         self.log.debug(' * got events data')
-        # scrape markets data
-        k = len(events)
-        odds = [{} for i in range(k)]
-        o = self._markets('Full Time Result')
-        for i, _1, _X, _2 in zip(range(k), o[:], o[k:-k], o[-k:]):
-            odds[i]['full_time_result'] = {'1': _1, 'X': _X, '2': _2}
+        self._odds = [{} for i in range(len(self._events))]
+        o, index_order = self._get_market('Full Time Result')
+        for i, _1, _X, _2 in zip(index_order, o[0], o[1], o[2]):
+            self._odds[i]['full_time_result'] = {
+                '1': _1, 'X': _X, '2': _2}
         self.log.debug(' * got 1 x 2 odds')
-        o = self._markets('Double Chance')
-        for i, _1X, _X2, _12 in zip(range(k), o[:], o[k:-k], o[-k:]):
-            odds[i]['double_chance'] = {'1X': _1X, 'X2': _X2, '12': _12}
+        o, index_order = self._get_market('Double Chance')
+        for i, _1X, _X2, _12 in zip(index_order, o[0], o[1], o[2]):
+            self._odds[i]['double_chance'] = {'1X': _1X, 'X2': _X2, '12': _12}
         self.log.debug(' * got double chance odds')
-        o = self._markets('Goals Over/Under')
-        for i, over, under in zip(range(k), o[:k], o[k:]):
-            odds[i]['under_over_2.5'] = {'under': under, 'over': over}
+        o, index_order = self._get_market('Goals Over/Under')
+        for i, over, under in zip(index_order, o[0], o[1]):
+            self._odds[i]['under_over_2.5'] = {'under': under, 'over': over}
         self.log.debug(' * got under/over 2.5 odds')
-        o = self._markets('Both Teams to Score')
-        for i, yes, no in zip(range(k), o[:k], o[k:]):
-            odds[i]['both_teams_to_score'] = {'yes': yes, 'no': no}
+        o, index_order = self._get_market('Both Teams to Score')
+        for i, yes, no in zip(index_order, o[0], o[1]):
+            self._odds[i]['both_teams_to_score'] = {'yes': yes, 'no': no}
         self.log.debug(' * got both teams to score odds')
-        o = self._markets('Draw No Bet')
-        for i, _1, _2 in zip(range(k), o[:k], o[k:]):
-            odds[i]['draw_no_bet'] = {'1': _1, '2': _2}
+        o, index_order = self._get_market('Draw No Bet')
+        for i, _1, _2 in zip(index_order, o[0], o[1]):
+            self._odds[i]['draw_no_bet'] = {'1': _1, '2': _2}
         self.log.debug(' * got draw no bet odds')
-        self.log.info('* finished the scrape *')
-        return events, odds
+        return self._events, self._odds
 
     def odds(self, country_std: str, league_std: str) -> tuple:
         msg_to_docs = 'Check the docs for a list of supported competitions'
