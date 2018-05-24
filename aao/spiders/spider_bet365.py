@@ -28,7 +28,10 @@ class SpiderBet365(Spider):
             lang_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
             lang_btn.click()
         self.log.debug('set english language')
-        self.login()
+        # if browser is in en version of the site, is no longer necessary to
+        # login. If you try login in this situation, an error will be raise
+        if self.base_url not in self.browser.current_url:
+            self.login()
         self.change_odds_format('Decimal')
 
     def change_odds_format(self, format_):
