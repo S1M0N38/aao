@@ -120,7 +120,7 @@ class Soccer(SpiderBet365):
         try:
             xpath = (f'//div[@class="sm-Market "]/div/div[text()='
                      f'"{self.country}"]/../..//div[@class="sm-'
-                     f'CouponLink_Label " and text()="World Cup 2018"]')
+                     f'CouponLink_Label " and text()="{self.league}"]')
             league = self.browser.find_element_by_xpath(xpath)
             league = self.wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
             league.click()

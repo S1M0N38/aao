@@ -5,7 +5,7 @@
             "england": "United Kingdom",
             "italy": "Italy",
             "spain": "Spain",
-            "world_cup_2018": "World Cup 2018",
+            "world_cup_2018": "World Cup",
             "test_country_foo": "foo_country",
             "test_country_null": null
         },
@@ -80,7 +80,7 @@
             },
 
             "world_cup_2018": {
-                "world_cup_2018": "World Cup 2018",
+                "world_cup_2018": "World Cup",
                 "group_a": null,
                 "group_b": null,
                 "group_c": null,
