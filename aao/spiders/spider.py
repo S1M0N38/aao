@@ -20,7 +20,7 @@ class Spider:
             'browser': browser,
             'explicit_wait': explicit_wait,
             'implicitly_wait': implicitly_wait,
-            'haedless': headless
+            'headless': headless,
         }
 
         self.log = self.get_logger()
