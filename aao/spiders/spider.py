@@ -10,8 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Spider:
     def __init__(self, username=None, password=None, log_level_console='INFO',
-                 log_level_file='DEBUG', browser='CHROME', explicit_wait=4,
-                 implicitly_wait=3):
+                 log_level_file='DEBUG', browser='CHROME', explicit_wait=5,
+                 implicitly_wait=5, headless=False):
 
         self.config = {
             'log_level_console': log_level_console,
@@ -20,6 +20,7 @@ class Spider:
             'browser': browser,
             'explicit_wait': explicit_wait,
             'implicitly_wait': implicitly_wait,
+            'haedless': headless
         }
 
         self.log = self.get_logger()
@@ -52,9 +53,15 @@ class Spider:
 
     def get_browser(self):
         if self.config['browser'] == 'CHROME':
+            user_agent = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ('
+                          'KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36')
             options = chrome_options()
             options.add_argument('--no-sandbox')
             options.add_argument('--window-size=1920,1080')
+            if self.config["headless"]:
+                options.add_argument("--headless")
+            options.add_argument(f'user-agent={user_agent}')
+            options.add_argument('--lang=en')
             browser = webdriver.Chrome(options=options)
             browser.implicitly_wait(self.config['implicitly_wait'])
             return browser
