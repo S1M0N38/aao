@@ -45,7 +45,7 @@ class Soccer(Spider888sport):
         dropdown_btn.click()
         dropdown.find_element_by_xpath(f'//li[text()="{market}"]').click()
         self.wait.until(EC.visibility_of_all_elements_located(
-            (By.CLASS_NAME, 'KambiBC-mod-outcome__odds')))
+            (By.CLASS_NAME, 'KambiBC-event-item__event-wrapper')))
 
     def _get_rows(self):
         rows = []
@@ -71,8 +71,10 @@ class Soccer(Spider888sport):
 
         # get the page
         self.log.debug(f'requesting page {country}, {league}')
-        self.browser.get(
-            f'{self.base_url}#/filter/football/{country}/{league}')
+        url = f'{self.base_url}#/filter/football/{country}/'
+        if league != '':
+            url += league
+        self.browser.get(url)
         self.wait.until(EC.visibility_of_all_elements_located(
             (By.CLASS_NAME, 'KambiBC-mod-event-group-header__title-inner')))
 
