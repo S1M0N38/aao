@@ -1,5 +1,6 @@
 from datetime import datetime as dt
 
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -26,10 +27,22 @@ class Soccer(Spider888sport):
         self.log = other.log
         self.table = other.table
         self.wait = other.wait
-        self.log.debug('loading countries table ...')
         self.countries_dict = self.table['soccer']['countries']
-        self.log.debug('loading leagues table ...')
         self.leagues_dict = self.table['soccer']['leagues']
+
+    def _request_page(self):
+        self.log.debug(f'requesting page {self.country_std}, {self.league_std}')
+        url = f'{self.base_url}#/filter/football/{self.country}/'
+        if self.league != '':
+            url += self.league
+        self.browser.get(url)
+        try:
+            self.wait.until(EC.visibility_of_all_elements_located(
+                (By.CLASS_NAME, 'KambiBC-mod-event-group-header__title-inner')))
+        except TimeoutException:
+            msg = f'no data found for {self.league_std}'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. It seems this league does not have odds ')
 
     def _change_market(self, market):
         current_market = self.browser.find_element_by_xpath(
@@ -59,26 +72,12 @@ class Soccer(Spider888sport):
             rows += pane.find_elements_by_tag_name('li')
         return rows
 
-    def odds(self, country_std, league_std):
+    def _matches(self):
         events = []
         odds = []
-        league = self.leagues_dict[country_std][league_std]
-        country = self.countries_dict[country_std]
-        if league is None:
-            msg = f'{league} is not supported in {self.name}'
-            self.log.warning(msg)
-            raise KeyError(f'{msg}. Check the docs for a list of supported leagues')
-
         # get the page
-        self.log.debug(f'requesting page {country}, {league}')
-        url = f'{self.base_url}#/filter/football/{country}/'
-        if league != '':
-            url += league
-        self.browser.get(url)
-        self.wait.until(EC.visibility_of_all_elements_located(
-            (By.CLASS_NAME, 'KambiBC-mod-event-group-header__title-inner')))
-
-        # expands the closed panes
+        self._request_page()
+        # expands closed panes
         self.log.debug(f'opening closed panes ...')
         close_panes = self.browser.find_elements_by_xpath(
             '//div[@class="KambiBC-collapsible-container '
@@ -87,9 +86,7 @@ class Soccer(Spider888sport):
         panes = self.browser.find_elements_by_xpath(
             '//div[@class="KambiBC-collapsible-container '
             'KambiBC-mod-event-group-container KambiBC-expanded"]')
-
-        self.log.info(f'* start scraping: {country}, {league} *')
-
+        self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
         # parse events, full time result and under over
         for pane in panes:
             header = pane.find_element_by_tag_name('h2').text
@@ -130,8 +127,8 @@ class Soccer(Spider888sport):
                 event = {
                     'timestamp': timestamp,
                     'datetime': datetime,
-                    'country': country_std,
-                    'league': league_std,
+                    'country': self.country_std,
+                    'league': self.league_std,
                     'home_team': home_team,
                     'away_team': away_team
                 }
@@ -140,7 +137,6 @@ class Soccer(Spider888sport):
         self.log.debug(' * got events data')
         self.log.debug(' * got 1 x 2 odds')
         self.log.debug(' * got under/over 2.5 odds')
-
         # scrape draw no bet
         self._change_market('Draw No Bet')
         rows = self._get_rows()
@@ -154,7 +150,6 @@ class Soccer(Spider888sport):
             except IndexError:
                 pass
         self.log.debug(' * got draw no bet odds')
-
         # scrape both teams to score
         self._change_market('Both Teams To Score')
         rows = self._get_rows()
@@ -168,7 +163,6 @@ class Soccer(Spider888sport):
             except IndexError:
                 pass
         self.log.debug(' * got both teams to score odds')
-
         # scrape double chance
         self._change_market('Double Chance')
         rows = self._get_rows()
@@ -184,6 +178,31 @@ class Soccer(Spider888sport):
             except IndexError:
                 pass
         self.log.debug(' * got double chance odds')
+        return events, odds
 
-        self.log.info('finished the scrape')
+    def odds(self, country_std: str, league_std: str) -> tuple:
+        msg_to_docs = 'Check the docs for a list of supported competitions'
+        try:
+            self.country_std = country_std
+            self.country = self.countries_dict[country_std]
+        except KeyError:
+            msg = f'{country_std} not found in {self.name} table'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        if self.country is None:
+            msg = f'{country_std} not supported in {self.name}'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        try:
+            self.league_std = league_std
+            self.league = self.leagues_dict[country_std][league_std]
+        except KeyError:
+            msg = f'{country_std} - {league_std} not found in {self.name} table'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        if self.league is None:
+            msg = f'{country_std} - {league_std} not supported in {self.name}'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        events, odds = self._matches()
         return events, odds
