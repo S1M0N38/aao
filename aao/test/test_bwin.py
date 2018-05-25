@@ -5,12 +5,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 LOG_LEVEL = 'CRITICAL'
+HEADLESS = False
 
 
 class SpiderTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBwin(log_level_console=LOG_LEVEL)
+        self.s = SpiderBwin(log_level_console=LOG_LEVEL, headless=HEADLESS)
 
     @classmethod
     def tearDownClass(self):
@@ -23,7 +24,7 @@ class SpiderTest(unittest.TestCase):
 class SoccerTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBwin(log_level_console=LOG_LEVEL)
+        self.s = SpiderBwin(log_level_console=LOG_LEVEL, headless=HEADLESS)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'
