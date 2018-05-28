@@ -4,7 +4,10 @@
         "countries": {
             "england": "UK",
             "italy": "Italy",
-            "spain": "Spain"
+            "spain": "Spain",
+            "world_cup_2018": "World Cup 2018",
+            "test_country_foo": "foo_country",
+            "test_country_null": null
         },
 
         "leagues": {
@@ -74,8 +77,25 @@
                 "copa_federacion": null,
                 "super_cup": null,
                 "copa_de_la_reina_women": null
-            }
-        }
+            },
 
+            "world_cup_2018": {
+                "world_cup_2018": null,
+                "group_a": "World Cup 2018 - Group A",
+                "group_b": "World Cup 2018 - Group B",
+                "group_c": "World Cup 2018 - Group C",
+                "group_d": "World Cup 2018 - Group D",
+                "group_e": "World Cup 2018 - Group E",
+                "group_f": "World Cup 2018 - Group F",
+                "group_g": "World Cup 2018 - Group G",
+                "group_h": "World Cup 2018 - Group H"
+            },
+
+            "test_country_foo": {
+                "test_league_foo": "foo_league",
+                "test_league_null": null
+            }
+
+        }
     }
 }
