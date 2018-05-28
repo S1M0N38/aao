@@ -44,7 +44,7 @@ class Soccer(Spider888sport):
             self.log.error(msg)
             raise KeyError(f'{msg}. It seems this league does not have odds ')
 
-    def _change_market(self, market):
+    def _change_market(self, market: str):
         current_market = self.browser.find_element_by_xpath(
             '//li[@class="KambiBC-dropdown__selection"]')
         if current_market.text == market:
@@ -60,7 +60,7 @@ class Soccer(Spider888sport):
         self.wait.until(EC.visibility_of_all_elements_located(
             (By.CLASS_NAME, 'KambiBC-event-item__event-wrapper')))
 
-    def _get_rows(self):
+    def _get_rows(self) -> list:
         rows = []
         panes = self.browser.find_elements_by_xpath(
             '//div[@class="KambiBC-collapsible-container '
@@ -70,9 +70,11 @@ class Soccer(Spider888sport):
             if 'Live' in header:
                 continue
             rows += pane.find_elements_by_tag_name('li')
+        self.wait.until(EC.visibility_of_all_elements_located(
+            (By.CLASS_NAME, 'KambiBC-event-item__link')))
         return rows
 
-    def _matches(self):
+    def _matches(self) -> tuple:
         events = []
         odds = []
         # get the page
