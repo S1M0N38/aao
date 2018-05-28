@@ -25,6 +25,13 @@ class SpiderWilliamhill(Spider):
         popup.find_element_by_id('yesBtn').click()
         self.log.debug('set London timezone')
 
+    def change_odds_format(self, format_: str):
+        # three formats possible: ODDS(fractional), DECIMAL, AMERICAN. Format
+        # had to be switch to 'Decimal' due to the future type conversion
+        select = Select(self.browser.find_element_by_id('oddsSelect'))
+        select.select_by_value(format_)
+        self.log.debug('set odds format to decimal')
+
     @property
     def soccer(self):
         self.log.debug('opening soccer page ...')
@@ -39,43 +46,30 @@ class Soccer(SpiderWilliamhill):
         self.browser = other.browser
         self.log = other.log
         self.table = other.table
-        self.log.debug('loading countries table ...')
+        self.wait = other.wait
         self.countries_dict = self.table['soccer']['countries']
-        self.log.debug('loading leagues table ...')
         self.leagues_dict = self.table['soccer']['leagues']
 
-    def _country_league(self, country, league):
+    def _country_league(self):
         table = self.browser.find_element_by_class_name('listContainer')
         try:
             page_link = table.find_element_by_xpath(
-                f'//h3["{country}"=text()]/../ul/li/a["{league}"=text()]')
+                f'//h3["{self.country}"=text()]/../ul/li/a["{self.league}"=text()]')
         except NoSuchElementException:
-            msg = f'Not found the page for {country} - {league}'
+            msg = (f'{self.country_std} - {self.league_std} not found on '
+                   f'{self.name} site, it seams that not odds are avaiable.')
             self.log.warning(msg)
-            raise KeyError(f'{msg}. Check the docs for a list of supported countries/leagues')
+            raise KeyError(msg)
+        self.log.debug(f'requesting page {self.country_std}, {self.league_std}')
         page_link.click()
 
-    def odds(self, country_std, league_std):
-        league = self.leagues_dict[country_std][league_std]
-        country = self.countries_dict[country_std]
-        if league is None:
-            msg = f'{league_std} is not supported in {self.name}'
-            self.log.warning(msg)
-            raise KeyError(f'{msg}. Check the docs for a list of supported leagues')
-
+    def _matches(self) -> tuple:
         events = []
         odds = []
         events_id = []
-
-        # open the league page
-        self.log.debug(f'requesting page {country}, {league}')
-        self._country_league(country, league)
-        # change the odds format to deciaml
-        select = Select(self.browser.find_element_by_id('oddsSelect'))
-        select.select_by_value("DECIMAL")
-        self.log.debug('set odds format to decimal')
-
-        self.log.info(f'* start scraping: {country}, {league} *')
+        self._country_league()
+        self.change_odds_format('DECIMAL')
+        self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
         # parse events and full time result
         full_time_result = self.browser.find_element_by_xpath(
             '//table[@class="tableData"]//span'
@@ -96,8 +90,8 @@ class Soccer(SpiderWilliamhill):
             event = {
                 'timestamp': timestamp,
                 'datetime': datetime,
-                'country': country_std,
-                'league': league_std,
+                'country': self.country_std,
+                'league': self.league_std,
                 'home_team': home_team,
                 'away_team': away_team
             }
@@ -112,7 +106,6 @@ class Soccer(SpiderWilliamhill):
             odds.append(odd)
         self.log.debug(' * got events data')
         self.log.debug(' * got 1 x 2 odds')
-
         # parse double chance
         self.browser.find_element_by_xpath(
             '//a[contains(text(), "\tDouble Chance")]').click()
@@ -127,7 +120,6 @@ class Soccer(SpiderWilliamhill):
             odds[i]['double_chance'] = {
                 '1X': float(_1X), 'X2': float(_X2), '12': float(_12)}
         self.log.debug(' * got double chance odds')
-
         # parse draw no bet
         self.browser.find_element_by_xpath(
             '//a[contains(text(), "\tDraw No Bet")]').click()
@@ -142,7 +134,6 @@ class Soccer(SpiderWilliamhill):
             odds[i]['draw_no_bet'] = {
                 '1': float(_1), '2': float(_2)}
         self.log.debug(' * got draw no bet odds')
-
         # parse both team to score
         self.browser.find_element_by_xpath(
             '//a[contains(text(), "\tBoth Teams To Score")]').click()
@@ -157,7 +148,6 @@ class Soccer(SpiderWilliamhill):
             odds[i]['both_team_to_score'] = {
                 'yes': float(yes), 'no': float(no)}
         self.log.debug(' * got both teams to score odds')
-
         # parse under over 2.5
         self.browser.find_element_by_xpath(
             '//a[contains(text(), '
@@ -175,6 +165,31 @@ class Soccer(SpiderWilliamhill):
                 odds[i]['under_over_2.5'] = {
                     'under': float(u), 'over': float(o)}
         self.log.debug(' * got under/over 2.5 odds')
+        return events, odds
 
-        self.log.info('finished the scrape')
+    def odds(self, country_std: str, league_std: str) -> tuple:
+        msg_to_docs = 'Check the docs for a list of supported competitions'
+        try:
+            self.country_std = country_std
+            self.country = self.countries_dict[country_std]
+        except KeyError:
+            msg = f'{country_std} not found in {self.name} table'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        if self.country is None:
+            msg = f'{country_std} not supported in {self.name}'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        try:
+            self.league_std = league_std
+            self.league = self.leagues_dict[country_std][league_std]
+        except KeyError:
+            msg = f'{country_std} - {league_std} not found in {self.name} table'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        if self.league is None:
+            msg = f'{country_std} - {league_std} not supported in {self.name}'
+            self.log.error(msg)
+            raise KeyError(f'{msg}. {msg_to_docs}')
+        events, odds = self._matches()
         return events, odds
