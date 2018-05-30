@@ -2,13 +2,14 @@ import unittest
 
 from aao.spiders.spider_888sport import Spider888sport
 
-LOG_LEVEL = 'CRITICAL'
-HEADLESS = False
-
 
 class SpiderTest(unittest.TestCase):
+    log_level = 'CRITICAL'
+    headless = False
+
     def setUp(self):
-        self.s = Spider888sport(log_level_console=LOG_LEVEL, headless=HEADLESS)
+        self.s = Spider888sport(log_level_console=self.log_level,
+                                headless=self.headless)
 
     def tearDown(self):
         self.s.browser.quit()
@@ -18,9 +19,13 @@ class SpiderTest(unittest.TestCase):
 
 
 class SoccerTest(unittest.TestCase):
+    log_level = 'CRITICAL'
+    headless = False
+
     @classmethod
     def setUpClass(self):
-        self.s = Spider888sport(log_level_console=LOG_LEVEL, headless=HEADLESS)
+        self.s = Spider888sport(log_level_console=self.log_level,
+                                headless=self.headless)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'

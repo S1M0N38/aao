@@ -4,14 +4,15 @@ from aao.spiders.spider_bwin import SpiderBwin
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-LOG_LEVEL = 'CRITICAL'
-HEADLESS = False
-
 
 class SpiderTest(unittest.TestCase):
+    headless = False
+    log_level = 'CRITICAL'
+
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBwin(log_level_console=LOG_LEVEL, headless=HEADLESS)
+        self.s = SpiderBwin(log_level_console=self.log_level,
+                            headless=self.headless)
 
     @classmethod
     def tearDownClass(self):
@@ -22,9 +23,13 @@ class SpiderTest(unittest.TestCase):
 
 
 class SoccerTest(unittest.TestCase):
+    headless = False
+    log_level = 'CRITICAL'
+
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBwin(log_level_console=LOG_LEVEL, headless=HEADLESS)
+        self.s = SpiderBwin(log_level_console=self.log_level,
+                            headless=self.headless)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'

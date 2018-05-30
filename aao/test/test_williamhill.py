@@ -2,15 +2,15 @@ import unittest
 
 from aao.spiders.spider_williamhill import SpiderWilliamhill
 
-LOG_LEVEL = 'CRITICAL'
-HEADLESS = False
-
 
 class SpiderTest(unittest.TestCase):
+    headless = False
+    log_level = 'CRITICAL'
+
     @classmethod
     def setUpClass(self):
-        self.s = SpiderWilliamhill(log_level_console=LOG_LEVEL,
-                                   headless=HEADLESS)
+        self.s = SpiderWilliamhill(log_level_console=self.log_level,
+                                   headless=self.headless)
 
     @classmethod
     def tearDownClass(self):
@@ -30,10 +30,13 @@ class SpiderTest(unittest.TestCase):
 
 
 class SoccerTest(unittest.TestCase):
+    headless = False
+    log_level = 'CRITICAL'
+
     @classmethod
     def setUpClass(self):
-        self.s = SpiderWilliamhill(log_level_console=LOG_LEVEL,
-                                   headless=HEADLESS)
+        self.s = SpiderWilliamhill(log_level_console=self.log_level,
+                                   headless=self.headless)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'

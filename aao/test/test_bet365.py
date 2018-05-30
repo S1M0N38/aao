@@ -4,17 +4,18 @@ import unittest
 from aao.spiders.spider_bet365 import SpiderBet365
 from selenium.common.exceptions import NoSuchElementException
 
-USERNAME = os.environ.get('USER_BET365')
-PASSWORD = os.environ.get('PASS_BET365')
-LOG_LEVEL = 'CRITICAL'
-HEADLESS = False
-
 
 class SpiderTest(unittest.TestCase):
+    headless = False
+    log_level = 'CRITICAL'
+    username = os.environ.get('USER_BET365')
+    password = os.environ.get('PASS_BET365')
+
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBet365(USERNAME, PASSWORD, log_level_console=LOG_LEVEL,
-                              headless=HEADLESS)
+        self.s = SpiderBet365(self.username, self.password,
+                              log_level_console=self.log_level,
+                              headless=self.headless)
 
     @classmethod
     def tearDownClass(self):
@@ -40,10 +41,16 @@ class SpiderTest(unittest.TestCase):
 
 
 class SoccerTest(unittest.TestCase):
+    headless = False
+    log_level = 'CRITICAL'
+    username = os.environ.get('USER_BET365')
+    password = os.environ.get('PASS_BET365')
+
     @classmethod
     def setUpClass(self):
-        self.s = SpiderBet365(USERNAME, PASSWORD, log_level_console=LOG_LEVEL,
-                              headless=HEADLESS)
+        self.s = SpiderBet365(self.username, self.password,
+                              log_level_console=self.log_level,
+                              headless=self.headless)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'
