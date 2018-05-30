@@ -118,3 +118,7 @@ sync.sh
 
 # preparing for travis ci
 .travis.yml
+
+# VPN stuff
+vpn.py
+vpn/
