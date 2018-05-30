@@ -1,5 +1,8 @@
 import argparse
 import importlib
+import subprocess
+import sys
+import time
 import unittest
 
 
@@ -17,7 +20,30 @@ def test_run(args):
         suite.addTest(tests)
     runner = unittest.TextTestRunner(
         verbosity=args.verbose, failfast=args.failfast)
-    runner.run(suite)
+    try:
+        runner.run(suite)
+    finally:
+        vpn.kill()
+
+
+def setup_vpn():
+    if sys.platform in ['linux', 'linux2', 'darwin']:
+        old_ip = subprocess.run(
+            ['curl', '-s', 'ipinfo.io/ip'], stdout=subprocess.PIPE).stdout
+        url = ('https://gist.githubusercontent.com/S1M0N38/bb6403808c7532d96b6'
+               'ad6e5d79b6abd/raw/a9d9889ffb3dd84983bad3a4a931581981b47b51/vpn.py')
+        subprocess.run(['curl', '-s', url, '-o', 'vpn.py'])
+        global vpn
+        vpn = subprocess.Popen(['sudo', 'python', 'vpn.py' ])
+        time.sleep(10)
+        new_ip = subprocess.run(
+            ['curl', '-s', 'ipinfo.io/ip'], stdout=subprocess.PIPE).stdout
+        if old_ip != new_ip:
+            print(f'{old_ip.decode("utf-8")[:-1]} -> {new_ip.decode("utf-8")}')
+        else:
+            raise KeyError('something went wrong with vpn setup :(')
+    else:
+        raise KeyError('Your os is not compatible with --vpn argument')
 
 
 def main():
@@ -44,9 +70,24 @@ def main():
         help='setup vpn for avoinding country ban')
     args = parser.parse_args()
     if args.vpn:
-        pass  # setup_vpn()
+        setup_vpn()
     test_run(args)
 
 
 if __name__ == '__main__':
     main()
+
+
+'''
+---- Install OpenVPN Linux (Ubuntu) ----
+- sudo apt-get install openvpn
+
+------- Install OpenVPN Mac OS ---------
+- install brew
+- brew install openvpn
+- Add this to your ~/.bash_profile or wherever you save ENV variable
+  PATH=$(brew --prefix openvpn)/sbin:$PATH
+
+------- Install OpenVPN Windows --------
+- install a gui tool but you can't use this -vpn argument
+'''
