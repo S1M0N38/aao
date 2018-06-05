@@ -6,10 +6,12 @@ from aao.spiders.spider_888sport import Spider888sport
 class SpiderTest(unittest.TestCase):
     log_level = 'CRITICAL'
     headless = False
+    proxy = None
 
     def setUp(self):
         self.s = Spider888sport(log_level_console=self.log_level,
-                                headless=self.headless)
+                                headless=self.headless,
+                                proxy=self.proxy)
 
     def tearDown(self):
         self.s.browser.quit()
@@ -21,11 +23,13 @@ class SpiderTest(unittest.TestCase):
 class SoccerTest(unittest.TestCase):
     log_level = 'CRITICAL'
     headless = False
+    proxy = None
 
     @classmethod
     def setUpClass(self):
         self.s = Spider888sport(log_level_console=self.log_level,
-                                headless=self.headless)
+                                headless=self.headless,
+                                proxy=self.proxy)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'

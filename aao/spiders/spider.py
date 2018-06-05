@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class Spider:
     def __init__(self, username=None, password=None, log_level_console='INFO',
                  log_level_file='DEBUG', browser='CHROME', explicit_wait=5,
-                 implicitly_wait=5, headless=False):
+                 implicitly_wait=5, headless=False, proxy=None):
 
         self.config = {
             'log_level_console': log_level_console,
@@ -21,6 +21,7 @@ class Spider:
             'explicit_wait': explicit_wait,
             'implicitly_wait': implicitly_wait,
             'headless': headless,
+            'proxy': proxy,
         }
 
         self.log = self.get_logger()
@@ -58,8 +59,11 @@ class Spider:
             options = chrome_options()
             options.add_argument('--no-sandbox')
             options.add_argument('--window-size=1920,1080')
-            if self.config["headless"]:
-                options.add_argument("--headless")
+            if self.config['proxy'] is not None:
+                proxy = self.config["proxy"]
+                options.add_argument(f'--proxy-server=http://{proxy}')
+            if self.config['headless']:
+                options.add_argument('--headless')
             options.add_argument(f'user-agent={user_agent}')
             options.add_argument('--lang=en')
             browser = webdriver.Chrome(options=options)
@@ -89,6 +93,10 @@ class Spider:
             f' + explicit_wait -> {self.config["explicit_wait"]} sec')
         self.log.debug(
             f' + implicitly_wait -> {self.config["implicitly_wait"]} sec')
+        self.log.debug(
+            f' + headless -> {self.config["headless"]}')
+        self.log.debug(
+            f' + proxy -> {self.config["proxy"]}')
 
     def homepage(self):
         self.log.debug(f'opening to homepage: {self.base_url}')

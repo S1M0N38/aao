@@ -8,11 +8,13 @@ from selenium.webdriver.support import expected_conditions as EC
 class SpiderTest(unittest.TestCase):
     headless = False
     log_level = 'CRITICAL'
+    proxy = None
 
     @classmethod
     def setUpClass(self):
         self.s = SpiderBwin(log_level_console=self.log_level,
-                            headless=self.headless)
+                            headless=self.headless,
+                            proxy=self.proxy)
 
     @classmethod
     def tearDownClass(self):
@@ -25,11 +27,13 @@ class SpiderTest(unittest.TestCase):
 class SoccerTest(unittest.TestCase):
     headless = False
     log_level = 'CRITICAL'
+    proxy = None 
 
     @classmethod
     def setUpClass(self):
         self.s = SpiderBwin(log_level_console=self.log_level,
-                            headless=self.headless)
+                            headless=self.headless,
+                            proxy=self.proxy)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'

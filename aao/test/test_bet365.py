@@ -8,6 +8,7 @@ from selenium.common.exceptions import NoSuchElementException
 class SpiderTest(unittest.TestCase):
     headless = False
     log_level = 'CRITICAL'
+    proxy = None
     username = os.environ.get('USER_BET365')
     password = os.environ.get('PASS_BET365')
 
@@ -15,7 +16,8 @@ class SpiderTest(unittest.TestCase):
     def setUpClass(self):
         self.s = SpiderBet365(self.username, self.password,
                               log_level_console=self.log_level,
-                              headless=self.headless)
+                              headless=self.headless,
+                              proxy=self.proxy)
 
     @classmethod
     def tearDownClass(self):
@@ -43,6 +45,7 @@ class SpiderTest(unittest.TestCase):
 class SoccerTest(unittest.TestCase):
     headless = False
     log_level = 'CRITICAL'
+    proxy = None
     username = os.environ.get('USER_BET365')
     password = os.environ.get('PASS_BET365')
 
@@ -50,7 +53,8 @@ class SoccerTest(unittest.TestCase):
     def setUpClass(self):
         self.s = SpiderBet365(self.username, self.password,
                               log_level_console=self.log_level,
-                              headless=self.headless)
+                              headless=self.headless,
+                              proxy=self.proxy)
         # country
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'
