@@ -116,8 +116,9 @@ Icon?
 # for digitalocean dev
 sync.sh
 
-# preparing for travis ci
+# preparing for ci
 .travis.yml
+.circleci/
 
 # VPN stuff
 vpn.py
