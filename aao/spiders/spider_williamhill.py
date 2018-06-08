@@ -1,7 +1,8 @@
 from datetime import datetime as dt
 
 from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import (
+    NoSuchElementException, ElementNotVisibleException)
 
 from .spider import Spider
 
