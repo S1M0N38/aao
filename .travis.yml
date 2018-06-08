@@ -1,0 +1,35 @@
+language: python
+
+python:
+  - "3.6"
+
+addons:
+    chrome: stable
+    artifacts:
+        paths:
+            - $(ls *.log | tr "\n" ":")
+
+notifications:
+    email: false
+
+install:
+    # Install ChromeDriver
+    - wget -N https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip -P ~/
+    - unzip ~/chromedriver_linux64.zip -d ~/
+    - rm ~/chromedriver_linux64.zip
+    - sudo mv -f ~/chromedriver /usr/local/share/
+    - sudo chmod +x /usr/local/share/chromedriver
+    - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+    # Install pip requirements
+    - pip install . proxybroker
+
+jobs:
+    include:
+    - stage: test_bet365
+      script: xvfb-run python test.py bet365 -vv
+    - stage: test_bwin
+      script: xvfb-run python test.py bwin -vv
+    - stage: test_888sport
+      script: xvfb-run python test.py 888sport -vv
+    - stage: test_williamhill
+      script: xvfb-run python test.py williamhill -vv -p $PROXY
