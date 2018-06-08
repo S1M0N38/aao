@@ -1,6 +1,6 @@
 # Against all Odds
 
-[![Build Status](https://travis-ci.com/S1M0N38/aao.svg?branch=master)](https://travis-ci.com/S1M0N38/aao)
+[![Build Status](https://travis-ci.com/S1M0N38/aao.svg?token=Gx8WFra7xzpqEE6t8HwE&branch=master)](https://travis-ci.com/S1M0N38/aao)
 
 Aganistallodds project aim to offert an environment where everyone can test his betting strategy on real odds.
 You can get the odds in two way: through **manual scraping** or using the **api**.
