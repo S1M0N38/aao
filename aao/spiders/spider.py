@@ -61,7 +61,7 @@ class Spider:
             options.add_argument('--window-size=1920,1080')
             if self.config['proxy'] is not None:
                 proxy = self.config["proxy"]
-                options.add_argument(f'--proxy-server=http://{proxy}')
+                options.add_argument(f'--proxy-server={proxy}')
             if self.config['headless']:
                 options.add_argument('--headless')
             options.add_argument(f'user-agent={user_agent}')
@@ -95,8 +95,6 @@ class Spider:
             f' + implicitly_wait -> {self.config["implicitly_wait"]} sec')
         self.log.debug(
             f' + headless -> {self.config["headless"]}')
-        self.log.debug(
-            f' + proxy -> {self.config["proxy"]}')
 
     def homepage(self):
         self.log.debug(f'opening to homepage: {self.base_url}')

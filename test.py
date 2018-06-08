@@ -26,6 +26,7 @@ def test_run(args):
 
 
 def find_proxy():
+    # Free proxy most of the time does not work or are slow
     proxy_list = []
 
     async def add_proxy(proxies):
@@ -71,10 +72,12 @@ def main():
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
         help='set console log level')
     parser.add_argument(
-        '-p', '--proxy', action='store_true', default=None,
-        help='use proxy in selenium for avoinding country ban')
+        '-p', '--proxy', type=str, default=None,
+        help=('use proxy in selenium for avoinding country ban. '
+              'e.g https://123.123.13:71 [type]://[host]:[port]'
+              'Use "auto" for search for free proxy (not reliable)'))
     args = parser.parse_args()
-    if args.proxy:
+    if args.proxy == 'auto':
         args.proxy = find_proxy()
     test_run(args)
 
