@@ -1,7 +1,7 @@
 import asyncio
 import argparse
 import importlib
-from operator import itemgetter
+import sys
 import unittest
 
 from proxybroker import Broker
@@ -22,7 +22,9 @@ def test_run(args):
         suite.addTest(tests)
     runner = unittest.TextTestRunner(
         verbosity=args.verbose, failfast=args.failfast)
-    runner.run(suite)
+    test_runner = runner.run(suite)
+    ret = not test_runner.wasSuccessful()
+    sys.exit(ret)
 
 
 def find_proxy():
