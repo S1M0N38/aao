@@ -30,6 +30,6 @@ jobs:
     - stage: test_bwin
       script: xvfb-run python test.py bwin -vv
     - stage: test_888sport
-      script: xvfb-run python test.py 888sport -vv
+      script: xvfb-run python test.py 888sport -vv -p $PROXY
     - stage: test_williamhill
       script: xvfb-run python test.py williamhill -vv -p $PROXY
