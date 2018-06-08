@@ -18,6 +18,14 @@ class SpiderWilliamhill(Spider):
     def start_session(self):
         self.log.info('starting new session ...')
         self.homepage()
+        # Sometimes appeare timezone popup, but not always
+        try:
+            self.select_timezone()
+        except ElementNotVisibleException:
+            self.log.debug('already set London timezone')
+            pass
+
+    def select_timezone(self):
         popup = self.browser.find_element_by_id('popupMain')
         popup.find_element_by_class_name('linkable').click()
         select = Select(popup.find_element_by_id('time_zone'))
