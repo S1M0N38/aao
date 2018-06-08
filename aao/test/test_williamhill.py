@@ -20,7 +20,6 @@ class SpiderTest(unittest.TestCase):
 
     def test_change_odds_format(self):
         self.s.change_odds_format('AMERICAN')
-        xpath = '//option[text()="American" and @selected="true"]'
         option = self.s.browser.find_elements_by_id('oddsDisplay')
         self.assertTrue(option)
 

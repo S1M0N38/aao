@@ -1,8 +1,6 @@
 import unittest
 
 from aao.spiders.spider_bwin import SpiderBwin
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class SpiderTest(unittest.TestCase):
@@ -27,7 +25,7 @@ class SpiderTest(unittest.TestCase):
 class SoccerTest(unittest.TestCase):
     headless = False
     log_level = 'CRITICAL'
-    proxy = None 
+    proxy = None
 
     @classmethod
     def setUpClass(self):

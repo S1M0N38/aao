@@ -2,7 +2,6 @@ import os
 import unittest
 
 from aao.spiders.spider_bet365 import SpiderBet365
-from selenium.common.exceptions import NoSuchElementException
 
 
 class SpiderTest(unittest.TestCase):

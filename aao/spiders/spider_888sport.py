@@ -161,7 +161,7 @@ class Soccer(Spider888sport):
                 value = [''] + value
             try:
                 yes, no = float(value[7]), float(value[9])
-                odds[i]['both_teams_to_score'] = {'yes': no, 'no': no}
+                odds[i]['both_teams_to_score'] = {'yes': yes, 'no': no}
             except IndexError:
                 pass
         self.log.debug(' * got both teams to score odds')
