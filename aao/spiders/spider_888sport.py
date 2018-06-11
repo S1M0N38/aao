@@ -33,6 +33,8 @@ class Soccer(Spider888sport):
     def _request_page(self):
         self.log.debug(f'requesting page {self.country_std}, {self.league_std}')
         url = f'{self.base_url}#/filter/football/{self.country}/'
+        if url == self.browser.current_url:
+            self.browser.refresh()
         if self.league != '':
             url += self.league
         self.browser.get(url)
