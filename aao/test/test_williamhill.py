@@ -44,14 +44,14 @@ class SoccerTest(unittest.TestCase):
         self.country_not_exists = 'this_country_does_not_exixts'
         self.country_null = 'test_country_null'
         self.country_foo = 'test_country_foo'
-        self.country_std = 'world_cup_2018'
-        self.country = 'World Cup 2018'
+        self.country_std = 'england'
+        self.country = 'UK'
         # league
         self.league_not_exists = 'this_league_does_not_exixts'
         self.league_null = 'test_league_null'
         self.league_foo = 'test_league_foo'
-        self.league_std = 'group_a'
-        self.league = 'World Cup 2018 - Group A'
+        self.league_std = 'premier_league'
+        self.league = 'English Premier League'
 
     @classmethod
     def tearDownClass(self):
