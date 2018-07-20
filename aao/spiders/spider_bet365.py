@@ -1,3 +1,4 @@
+import time
 from datetime import datetime as dt
 
 from selenium.common.exceptions import NoSuchElementException
@@ -23,7 +24,7 @@ class SpiderBet365(Spider):
         self.wait.until(EC.invisibility_of_element_located((By.ID, 'dBlur')))
         lang_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
         lang_btn.click()
-        if 'lng' not in self.browser.current_url:
+        if 'cb' not in self.browser.current_url:
             self.wait.until(EC.invisibility_of_element_located((By.ID, 'dBlur')))
             lang_btn = self.wait.until(EC.element_to_be_clickable((By.XPATH, lang)))
             lang_btn.click()
