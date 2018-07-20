@@ -24,7 +24,6 @@ class SpiderWilliamhill(Spider):
             self.select_timezone()
         except ElementNotVisibleException:
             self.log.debug('already set London timezone')
-            pass
 
     def select_timezone(self):
         popup = self.browser.find_element_by_id('popupMain')
