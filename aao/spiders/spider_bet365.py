@@ -198,7 +198,7 @@ class Soccer(SpiderBet365):
         self.log.debug(' * got double chance odds')
         o, index_order = self._get_market('Goals Over/Under')
         for i, over, under in zip(index_order, o[0], o[1]):
-            self._odds[i]['under_over_2.5'] = {'under': under, 'over': over}
+            self._odds[i]['under_over'] = {'under': under, 'over': over}
         self.log.debug(' * got under/over 2.5 odds')
         o, index_order = self._get_market('Both Teams to Score')
         for i, yes, no in zip(index_order, o[0], o[1]):

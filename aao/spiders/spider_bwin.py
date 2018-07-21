@@ -24,9 +24,9 @@ class Soccer(SpiderBwin):
     sport_id = '4'
     market_ids = {
         '25': 'events_and_full_time_result',
-        '31': 'under_over_2.5',
+        '31': 'under_over',
         '190': 'double_chance',
-        '261': 'both_team_to_score',
+        '261': 'both_teams_to_score',
         '359': 'draw_no_bet'
     }
 
@@ -155,7 +155,7 @@ class Soccer(SpiderBwin):
                         break
                     if 'Both Teams to Score' == header_row:
                         _, yes, _, no = rows[i+1].text.split('\n')
-                        self._odds[index_order]['both_team_to_score'] = {
+                        self._odds[index_order]['both_teams_to_score'] = {
                             'yes': float(yes), 'no': float(no)}
                         break
                     if 'Double Chance' == header_row:
@@ -166,7 +166,7 @@ class Soccer(SpiderBwin):
                     if 'Total Goals - Over/Under' == header_row:
                         if ("Over 2,5" and "Under 2,5") in row.text:
                             _, o, _, u = row.text.split('\n')
-                            self._odds[index_order]['under_over_2.5'] = {
+                            self._odds[index_order]['under_over'] = {
                                 'under': float(u), 'over': float(o)}
                             break
 

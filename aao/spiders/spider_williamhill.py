@@ -145,15 +145,15 @@ class Soccer(SpiderWilliamhill):
         # parse both team to score
         self.browser.find_element_by_xpath(
             '//a[contains(text(), "\tBoth Teams To Score")]').click()
-        both_team_to_score = self.browser.find_element_by_xpath(
+        both_teams_to_score = self.browser.find_element_by_xpath(
             '//table[@class="tableData"]//span[contains(text(),'
             ' "\tBoth Teams To Score")]/../../../../tbody')
-        rows = both_team_to_score.find_elements_by_class_name('rowOdd')
+        rows = both_teams_to_score.find_elements_by_class_name('rowOdd')
         for row in rows:
             data = row.find_elements_by_tag_name('td')
             i = events_id.index(row.get_attribute('id').split('_')[2])
             yes, no = data[4].text, data[5].text
-            odds[i]['both_team_to_score'] = {
+            odds[i]['both_teams_to_score'] = {
                 'yes': float(yes), 'no': float(no)}
         self.log.debug(' * got both teams to score odds')
         # parse under over 2.5
@@ -170,7 +170,7 @@ class Soccer(SpiderWilliamhill):
                 i = row.find_element_by_tag_name('td')
                 i = events_id.index(i.get_attribute('id').split('_')[2])
                 u, o = data[3].text, data[5].text
-                odds[i]['under_over_2.5'] = {
+                odds[i]['under_over'] = {
                     'under': float(u), 'over': float(o)}
         self.log.debug(' * got under/over 2.5 odds')
         return events, odds
