@@ -91,8 +91,9 @@ class Soccer(SpiderBwin):
             for row in rows:
                 class_name = 'marketboard-event-without-header__market-time'
                 try:
-                    time_str = self.wait.until(EC.visibility_of_element_located(
+                    self.wait.until(EC.visibility_of_element_located(
                         (By.CLASS_NAME, class_name))).text
+                    time_str = row.find_element_by_class_name(class_name).text
                 except TimeoutException:
                     msg = f'no data found for {self.league_std}'
                     self.log.error(msg)
