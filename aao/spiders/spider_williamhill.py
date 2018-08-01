@@ -154,7 +154,7 @@ class Soccer(SpiderWilliamhill):
                 odds_btn = row.find_elements_by_tag_name('button')
                 under, over = [o.text for o in odds_btn]
                 odds[i]['under_over'] = {
-                    'under': float(yes), 'over': float(no)}
+                    'under': float(under), 'over': float(over)}
         self.log.debug(' * got under/over 2.5 odds')
 
         # double chance
