@@ -2,9 +2,9 @@
     "soccer": {
 
         "countries": {
-            "england": "UK",
-            "italy": "Italy",
-            "spain": "Spain",
+            "england": "england",
+            "italy": "italy",
+            "spain": "spain",
             "test_country_foo": "foo_country",
             "test_country_null": null
         },
@@ -12,18 +12,18 @@
         "leagues": {
 
             "england":{
-                "premier_league": "English Premier League",
-                "efl_championship": "English Championship",
-                "efl_league_one": "English League 1",
-                "efl_league_two": "English League 2",
-                "national_league": "English National League",
-                "national_league_north": "English National League North",
-                "national_league_south": "English National League South",
-                "northern_premier_league": "English Northern Premier",
+                "premier_league": "English-Premier-League",
+                "efl_championship": "English-Championship",
+                "efl_league_one": "English-League-1",
+                "efl_league_two": "English-League-2",
+                "national_league": "English-National-League",
+                "national_league_north": "English-National-League-North",
+                "national_league_south": "English-National-League-South",
+                "northern_premier_league": null,
                 "southern_premier_league": null,
-                "isthmian_league": "English Isthmian Premier",
+                "isthmian_league": null,
                 "premier_league_2": null,
-                "fa_cup": "English FA Cup",
+                "fa_cup": "English-FA-Cup",
                 "efl_cup" : null,
                 "efl_trophy": null,
                 "fa_trophy": null,
@@ -32,21 +32,21 @@
                 } ,
 
             "italy": {
-                "serie_a": "Italian Serie A",
-                "serie_b": "Italian Serie B",
-                "serie_c_group_a": "Italian Serie C Girone A",
-                "serie_c_group_b": "Italian Serie C Girone B",
-                "serie_c_group_c": "Italian Serie C Girone C",
+                "serie_a": "Italian-Serie-A",
+                "serie_b": null,
+                "serie_c_group_a": null,
+                "serie_c_group_b": null,
+                "serie_c_group_c": null,
                 "primavera_1": null,
                 "primavera_2_group_a": null,
                 "primavera_2_group_b": null,
-                "coppa_italia": "Coppa Italia",
+                "coppa_italia": null,
                 "supercoppa_italiana": null
             },
 
             "spain": {
-                "la_liga": "Spainsh La Liga Primera",
-                "la_liga_2": "Spainsh Segunda",
+                "la_liga": "Spainsh-La-Liga-Primera",
+                "la_liga_2": null,
                 "segunda_division_b_group_1": null,
                 "segunda_division_b_group_2": null,
                 "segunda_division_b_group_3": null,
@@ -72,7 +72,7 @@
                 "premiera_division_women": null,
                 "segunda_division_women": null,
                 "youth_league": null,
-                "copa_del_rey": "Spanish Copa del Rey",
+                "copa_del_rey": "Spanish-Copa-del-Rey",
                 "copa_federacion": null,
                 "super_cup": null,
                 "copa_de_la_reina_women": null
