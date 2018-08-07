@@ -170,7 +170,8 @@ class Soccer(SpiderWilliamhill):
                 i = find_event_index(row)
                 odds_btn = row.find_elements_by_tag_name('button')
                 _1X, _X2, _12 = [o.text for o in odds_btn]
-                odds[i]['double_chance'] = {'1X': _1X, 'X2': _X2, '12': _12}
+                odds[i]['double_chance'] = {
+                    '1X': float(_1X), 'X2': float(_X2), '12': float(_12)}
         self.log.debug(' * got double chance odds')
 
         # draw no bet NOT AVAIABLE
