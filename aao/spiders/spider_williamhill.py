@@ -63,7 +63,7 @@ class Soccer(SpiderWilliamhill):
     def _matches(self) -> tuple:
         events = []
         odds = []
-        url = f'{self.base_url}/football/competitions/{self.league}'
+        url = f'{self.base_url}/football/competitions/{self.league}/matches'
         self._request_page(url)
         self.log.debug(f'requesting page {self.country_std}, {self.league_std}')
         self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
