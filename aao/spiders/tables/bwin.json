@@ -83,6 +83,53 @@
                 "test_league_null": null
             }
 
+        },
+
+        "teams": {
+
+            "Manchester City": "Manchester City",
+            "Liverpool": "Liverpool",
+            "Manchester Utd": "Manchester United",
+            "Chelsea": "Chelsea",
+            "Tottenham Hotspur": "Tottenham",
+            "Arsenal": "Arsenal",
+            "Everton": "Everton",
+            "Wolverhampton Wanderers": "Wolverhampton Wanderers",
+            "Leicester City": "Leicester City",
+            "West Ham United": "West Ham",
+            "Southampton": "Southampton",
+            "Crystal Palace": "Crystal Palace",
+            "Burnley": "Burnley",
+            "Newcastle United": "Newcastle United",
+            "Brighton and Hove Albion": "Brighton & Hove Albion",
+            "Watford": "Watford",
+            "Bournemouth": "Bournemouth",
+            "Fulham": "Fulham",
+            "Huddersfield Town": "Huddersfield Town",
+            "Cardiff City": "Cardiff City",
+
+            "Juventus": "Juventus",
+            "Inter Milan": "Inter",
+            "SSC Napoli": "Napoli",
+            "AS Roma": "Roma",
+            "AC Milan": "AC Milan",
+            "Lazio Rome": "Lazio",
+            "Atalanta": "Atalanta",
+            "Fiorentina": "Fiorentina",
+            "FC Torino": "Torino",
+            "Sampdoria": "Sampdoria",
+            "Genoa CFC": "Genoa",
+            "Udinese": "Udinese",
+            "Sassuolo": "Sassuolo",
+            "FC Parma": "Parma",
+            "Spal": "Spal",
+            "FC Empoli": "Empoli",
+            "Cagliari": "Cagliari",
+            "Bologna": "Bologna",
+            "Chievo": "Chievo Verona",
+            "Frosinone": "Frosinone"
+
         }
+
     }
 }
