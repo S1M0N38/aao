@@ -93,6 +93,7 @@ class Soccer(SpiderBet365):
         self.wait = other.wait
         self.countries_dict = self.table['soccer']['countries']
         self.leagues_dict = self.table['soccer']['leagues']
+        self.teams_dict = self.table['soccer']['teams']
 
     def _country(self):
         try:
@@ -143,6 +144,12 @@ class Soccer(SpiderBet365):
                 continue
             _time, teams = r.text.split('\n')
             home_team, away_team = teams.split(' v ')
+            try:
+                home_team = self.teams_dict[home_team]
+                away_team = self.teams_dict[away_team]
+            except KeyError:
+                msg = f'It seems that table/{self.name}.json'
+                raise KeyError(msg)
             dt_str = ' '.join([str(dt.now().year), date, _time])
             datetime = dt.strptime(dt_str, '%Y %a %d %b  %H:%M')
             timestamp = int(dt.timestamp(datetime))

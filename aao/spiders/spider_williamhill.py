@@ -48,6 +48,7 @@ class Soccer(SpiderWilliamhill):
         self.wait = other.wait
         self.countries_dict = self.table['soccer']['countries']
         self.leagues_dict = self.table['soccer']['leagues']
+        self.teams_dict = self.table['soccer']['teams']
 
     def _request_page(self, url):
         self.browser.get(url)
@@ -83,6 +84,12 @@ class Soccer(SpiderWilliamhill):
                 teams = row.find_element_by_class_name(
                     'sp-o-market__title').text
                 home_team, away_team = teams.split(' v ')
+                try:
+                    home_team = self.teams_dict[home_team]
+                    away_team = self.teams_dict[away_team]
+                except KeyError:
+                    msg = f'It seems that table/{self.name}.json'
+                    raise KeyError(msg)
                 odds_btn = row.find_elements_by_tag_name('button')
                 _1, _X, _2 = [o.text for o in odds_btn]
                 dt_str = ' '.join([str(dt.now().year), date, _time])
@@ -118,6 +125,12 @@ class Soccer(SpiderWilliamhill):
             teams = row.find_element_by_class_name(
                 'sp-o-market__title').text
             home_team, away_team = teams.split(' v ')
+            try:
+                home_team = self.teams_dict[home_team]
+                away_team = self.teams_dict[away_team]
+            except KeyError:
+                msg = f'It seems that table/{self.name}.json'
+                raise KeyError(msg)
             for i, e in enumerate(events):
                 if e['home_team'] == home_team and \
                    e['away_team'] == away_team:

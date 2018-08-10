@@ -29,6 +29,7 @@ class Soccer(Spider888sport):
         self.wait = other.wait
         self.countries_dict = self.table['soccer']['countries']
         self.leagues_dict = self.table['soccer']['leagues']
+        self.teams_dict = self.table['soccer']['teams']
 
     def _request_page(self):
         self.log.debug(f'requesting page {self.country_std}, {self.league_std}')
@@ -105,6 +106,12 @@ class Soccer(Spider888sport):
             for row in rows[2:]:
                 value = row.text.split('\n')
                 home_team, away_team = value[2], value[3]
+                try:
+                    home_team = self.teams_dict[home_team]
+                    away_team = self.teams_dict[away_team]
+                except KeyError:
+                    msg = f'It seems that table/{self.name}.json'
+                    raise KeyError(msg)
                 odd = {}
                 try:
                     _time = value[1]

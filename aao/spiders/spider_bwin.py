@@ -37,6 +37,7 @@ class Soccer(SpiderBwin):
         self.wait = other.wait
         self.countries_dict = self.table['soccer']['countries']
         self.leagues_dict = self.table['soccer']['leagues']
+        self.teams_dict = self.table['soccer']['teams']
 
     def _request_page(self, markets: list, page_num: int):
         if page_num < 0:
@@ -105,6 +106,12 @@ class Soccer(SpiderBwin):
                 home_team, _1 = right.text.split('\n')
                 _, _X = middle.text.split('\n')
                 away_team, _2 = left.text.split('\n')
+                try:
+                    home_team = self.teams_dict[home_team]
+                    away_team = self.teams_dict[away_team]
+                except KeyError:
+                    msg = f'It seems that table/{self.name}.json'
+                    raise KeyError(msg)
                 event = {
                     'timestamp': timestamp,
                     'datetime': datetime,
@@ -137,6 +144,12 @@ class Soccer(SpiderBwin):
                     'marketboard-event-with-header__header')
                 home_team, away_team = mat_header.text.split(' - ')
                 away_team = ' '.join(away_team.split(' ')[:-2])
+                try:
+                    home_team = self.teams_dict[home_team]
+                    away_team = self.teams_dict[away_team]
+                except KeyError:
+                    msg = f'It seems that table/{self.name}.json'
+                    raise KeyError(msg)
                 # finds index of the events row
                 for i, event in enumerate(self._events):
                     if event["home_team"] == home_team and \
