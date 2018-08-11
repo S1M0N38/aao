@@ -9,7 +9,7 @@ Every country have differnt about gambling, so we decide to develope the spiders
 
 ### Bet365
 ```python
-from aao.scraper.spider_bet365 import SpiderBet365
+from aao.spiders import SpiderBet365
 
 spider = SpiderBet365('username', 'password')
 ```
@@ -17,7 +17,7 @@ If you try to use a VPN with bet365 the site doesn't work. So, if you want to ac
 
 ### 888sport
 ```python
-from aao.spiders.spider_888sport import Spider888sport
+from aao.spiders import Spider888sport
 
 spider = Spider888sport()
 ```
@@ -25,7 +25,7 @@ No account needed, working with a German VPN
 
 ### Bwin
 ```python
-from aao.spiders.spider_bwin import SpiderBwin
+from aao.spiders import SpiderBwin
 
 spider = SpiderBwin()
 ```
@@ -33,7 +33,7 @@ No account needed, working with a German VPN
 
 ### William Hill
 ```python
-from aao.spiders.spider_williamhill import SpiderWilliamhill
+from aao.spiders import SpiderWilliamhill
 
 spider = SpiderWilliamhill()
 ```
