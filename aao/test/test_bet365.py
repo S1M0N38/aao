@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from aao.spiders.spider_bet365 import SpiderBet365
+from aao.spiders import SpiderBet365
 
 
 class SpiderTest(unittest.TestCase):

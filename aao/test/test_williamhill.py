@@ -1,6 +1,6 @@
 import unittest
 
-from aao.spiders.spider_williamhill import SpiderWilliamhill
+from aao.spiders import SpiderWilliamhill
 
 
 class SpiderTest(unittest.TestCase):
