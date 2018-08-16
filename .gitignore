@@ -121,3 +121,6 @@ sync.sh
 # VPN stuff
 vpn.py
 vpn/
+
+# autogen docs
+generate_docs.py
