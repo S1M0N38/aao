@@ -1,10 +1,7 @@
-import asyncio
 import argparse
 import importlib
 import sys
 import unittest
-
-from proxybroker import Broker
 
 
 def test_run(args):
@@ -25,33 +22,6 @@ def test_run(args):
     test_runner = runner.run(suite)
     ret = not test_runner.wasSuccessful()
     sys.exit(ret)
-
-
-def find_proxy():
-    # Free proxy most of the time does not work or are slow
-    proxy_list = []
-
-    async def add_proxy(proxies):
-        while not proxy_list:
-            proxy = await proxies.get()
-            if proxy is None:
-                break
-            if proxy.avg_resp_time < .50:
-                print(proxy.as_json())
-                proxy_list.append(f'{proxy.host}:{proxy.port}')
-
-    proxies = asyncio.Queue()
-    broker = Broker(proxies)
-    tasks = asyncio.gather(
-        broker.find(
-            types=[('HTTP', 'Transparent')],
-            countries=['DE', 'NL']),
-        add_proxy(proxies))
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(tasks)
-    proxy = proxy_list[0]
-    return proxy
 
 
 def main():
@@ -79,8 +49,6 @@ def main():
               'e.g https://123.123.13:71 [type]://[host]:[port]'
               'Use "auto" for search for free proxy (not reliable)'))
     args = parser.parse_args()
-    if args.proxy == 'auto':
-        args.proxy = find_proxy()
     test_run(args)
 
 
