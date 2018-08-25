@@ -1,5 +1,4 @@
 language: python
-
 python:
   - "3.6"
 
@@ -20,16 +19,53 @@ install:
     - sudo mv -f ~/chromedriver /usr/local/share/
     - sudo chmod +x /usr/local/share/chromedriver
     - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-    # Install pip requirements
-    - pip install . proxybroker
 
 jobs:
     include:
-    - stage: test_bet365
-      script: xvfb-run python test.py bet365 -vv
-    - stage: test_bwin
-      script: xvfb-run python test.py bwin -vv
-    - stage: test_888sport
-      script: xvfb-run python test.py 888sport -vv -p $PROXY
-    - stage: test_williamhill
-      script: xvfb-run python test.py williamhill -vv -p $PROXY
+
+    # python 3.6 test
+    - stage: test
+      script:
+          - pipenv run python test.py bet365 -hd -vv
+      python: "3.6"
+    - stage: test
+      script:
+          - pipenv run python test.py bwin -hd -vv
+      python: "3.6"
+    - stage: test
+      script:
+          - pipenv run python test.py 888sport -vv -hd -p $PROXY
+      python: "3.6"
+    - stage: test
+      script:
+          - pipenv run python test.py williamhill -vv -hd -p $PROXY
+      python: "3.6"
+
+    # python 3.7 test
+    - stage: test
+      script:
+          - pipenv run python test.py bet365 -hd -vv
+      python: "3.7"
+      dist: xenial
+      sudo: true
+
+    - stage: test
+      script:
+          - pipenv run python test.py bwin -hd -vv
+      python: "3.7"
+      dist: xenial
+      sudo: true
+
+    - stage: test
+      script:
+          - pipenv run python test.py 888sport -vv -hd -p $PROXY
+      python: "3.7"
+      dist: xenial
+      sudo: true
+
+    - stage: test
+      script:
+          - pipenv run python test.py williamhill -vv -hd -p $PROXY
+      python: "3.7"
+      dist: xenial
+      sudo: true
