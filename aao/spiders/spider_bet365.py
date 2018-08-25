@@ -142,6 +142,8 @@ class Soccer(SpiderBet365):
             if r.text.startswith(days):
                 date = r.text
                 continue
+            if len(r.text.split('\n')) > 2:
+                continue  # the match is LIVE
             _time, teams = r.text.split('\n')
             home_team, away_team = teams.split(' v ')
             try:
@@ -176,15 +178,13 @@ class Soccer(SpiderBet365):
         odds = self.browser.find_elements_by_xpath(xpath_odds)
         odds = [float(o.text) for o in odds]
         odds = [odds[i:i+len(events)] for i in range(0, len(odds), len(events))]
-        assert all(len(events) == len(column) for column in odds)
-        assert self._events >= events
+        assert len(self._events) >= len(events)
         index_order = []
         for temp_event in events:
             for i, event in enumerate(self._events):
                 if event["home_team"] == temp_event["home_team"] and \
                    event["away_team"] == temp_event["away_team"]:
                     index_order.append(i)
-                    continue
         return odds, index_order
 
     def _matches(self) -> tuple:
