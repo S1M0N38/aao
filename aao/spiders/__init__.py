@@ -1,4 +1,13 @@
-from .spider_bet365 import SpiderBet365
-from .spider_bwin import SpiderBwin
-from .spider_888sport import Spider888sport
-from .spider_williamhill import SpiderWilliamhill
+import importlib
+
+package = 'aao.spiders.bookmakers'
+
+SpiderBet365 = importlib.import_module(
+    '.bet365', package).SpiderBet365
+SpiderBwin = importlib.import_module(
+    '.bwin', package).SpiderBwin
+Spider888sport = importlib.import_module(
+    '.888sport', package).Spider888sport
+SpiderWilliamhill = importlib.import_module(
+    '.williamhill', package).SpiderWilliamhill
+
