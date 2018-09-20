@@ -8,6 +8,7 @@ aao = {editable = true, path = "."}
 
 [dev-packages]
 pytest = "*"
+"flake8" = "*"
 
 [requires]
 python_version = "3.7"
