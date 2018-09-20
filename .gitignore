@@ -124,3 +124,7 @@ vpn/
 
 # autogen docs
 generate_docs.py
+
+# vim swp file
+*.swp
+
