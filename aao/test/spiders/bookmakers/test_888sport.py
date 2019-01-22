@@ -113,9 +113,7 @@ class TestSoccer():
 
     @pytest.mark.parser
     def test_parse_teams_team_not_in_table(self, spider):
-        row = ['Sat', '18:30', 'Cardiff City', 'Manchester United']
-        row[2] = 'foo_home_team'
-        row[3] = 'foo_away_team'
+        row = ['Sat', '18:30', 'foo_home_team', 'foo_away_team']
         msg = ('foo_away_team not in bookmaker teams table. '
                'foo_home_team not in bookmaker teams table. '
                'Tables need an upgrade, notify the devs.')
