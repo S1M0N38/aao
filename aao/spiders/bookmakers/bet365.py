@@ -94,11 +94,11 @@ class SpiderBet365(Spider):
     @property
     def soccer(self):
         if not re.match(r'https://www\.bet365\.com/#/A[SC]/B1/',
-            self.browser.current_url):
+                        self.browser.current_url):
             self.browser.get(self.base_url + '#/AS/B1/')
             self.log.debug('opening soccer page …')
         return self._soccer
- 
+
 
 class Soccer(sports.Soccer):
 
@@ -106,7 +106,7 @@ class Soccer(sports.Soccer):
         super().__init__(spider)
 
     def _expands_country(self):
-        xpath = f'//div[@class="sm-Market "]//div[text()="{self._country}"]' 
+        xpath = f'//div[@class="sm-Market "]//div[text()="{self._country}"]'
         self.wait.until(EC.text_to_be_present_in_element(
             (By.XPATH, xpath), self._country))
         country_btn = self.wait.until(EC.element_to_be_clickable(
@@ -116,9 +116,9 @@ class Soccer(sports.Soccer):
         if header == 'sm-Market_HeaderClosed ':
             self.log.debug(f'expanding {self.country} tab …')
             country_btn.click()
-        xpath = xpath + '/../..//div[@class="sm-CouponLink_Label "]' 
+        xpath = xpath + '/../..//div[@class="sm-CouponLink_Label "]'
         self.browser.find_elements_by_xpath(xpath)
-        
+
     def _request_page(self):
         self.log.debug(f'requesting page {self.country} - {self.league} …')
         self.browser.get(self.base_url + '#/AS/B1/')
@@ -135,10 +135,10 @@ class Soccer(sports.Soccer):
             msg = f'No data found for {self.country} - {self.league}.'
             self.log.error(msg)
             raise KeyError(f'{msg} This competition does not have odds')
-            
+
     def _change_market(self, market):
         markets = {'Full Time Result', 'Double Chance', 'Goals Over/Under',
-            'Both Teams to Score', 'Draw No Bet'}
+                   'Both Teams to Score', 'Draw No Bet'}
         assert market in markets
         market_btn = self.wait.until(EC.element_to_be_clickable(
             (By.CLASS_NAME, 'cm-CouponMarketGroup_ChangeMarket')))
@@ -150,7 +150,7 @@ class Soccer(sports.Soccer):
     def _get_rows(self):
         days = {'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'}
         xpath_cols = ('//div[@class="gl-MarketGroupContainer '
-                 'gl-MarketGroupContainer_HasLabels "]/div')
+                      'gl-MarketGroupContainer_HasLabels "]/div')
         xpath_rows = ('//div[@class="sl-MarketCouponFixtureLabelBase '
                       'gl-Market_General gl-Market_HasLabels "]/div')
         cols_len = len(self.browser.find_elements_by_xpath(xpath_cols))
@@ -167,8 +167,8 @@ class Soccer(sports.Soccer):
                 row.append(value)
             # exclude dumbs rows and live matches
             if row and len(row[0].split('\n')) == 2:
-                rows.append([date] + row[0].split('\n') + row[1:])            
-        return rows 
+                rows.append([date] + row[0].split('\n') + row[1:])
+        return rows
 
     def _parse_datetime(self, row):
         format_ = '%a %d %b'
@@ -224,7 +224,7 @@ class Soccer(sports.Soccer):
         rows = self._get_rows()
         for row in rows:
             events.append(self._parse_event(row))
-            full_time_result.append(self._parse_full_time_result(row))    
+            full_time_result.append(self._parse_full_time_result(row))
         return events, full_time_result
 
     def _under_over(self):
@@ -233,7 +233,7 @@ class Soccer(sports.Soccer):
         rows = self._get_rows()
         for row in rows:
             events.append(self._parse_event(row))
-            under_over.append(self._parse_under_over(row))    
+            under_over.append(self._parse_under_over(row))
         return events, under_over
 
     def _draw_no_bet(self):
@@ -242,16 +242,16 @@ class Soccer(sports.Soccer):
         rows = self._get_rows()
         for row in rows:
             events.append(self._parse_event(row))
-            draw_no_bet.append(self._parse_draw_no_bet(row))    
+            draw_no_bet.append(self._parse_draw_no_bet(row))
         return events, draw_no_bet
-        
+
     def _both_teams_to_score(self):
         events, both_teams_to_score = [], []
         self._change_market('Both Teams to Score')
         rows = self._get_rows()
         for row in rows:
             events.append(self._parse_event(row))
-            both_teams_to_score.append(self._parse_both_teams_to_score(row))    
+            both_teams_to_score.append(self._parse_both_teams_to_score(row))
         return events, both_teams_to_score
 
     def _double_chance(self):
@@ -260,7 +260,7 @@ class Soccer(sports.Soccer):
         rows = self._get_rows()
         for row in rows:
             events.append(self._parse_event(row))
-            double_chance.append(self._parse_double_chance(row))    
+            double_chance.append(self._parse_double_chance(row))
         return events, double_chance
 
     @staticmethod
