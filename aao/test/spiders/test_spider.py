@@ -10,3 +10,4 @@ class TestSpider:
         s = spider()
         s.quit()
         assert getattr(s.browser.service.process, 'pid', None) is None
+
