@@ -16,6 +16,7 @@ COMPETIONS = [
     #['spain', 'spain', 'la_liga', 'la_liga', 'La Liga'],
     ]
 
+
 class TestSpider():
 
     @pytest.fixture()
@@ -63,12 +64,13 @@ class TestSpider():
         spider._change_odds_format('Decimal')
 
     def test_soccer(self):
-        spider =  SpiderBet365(username=username, password=password)
+        spider = SpiderBet365(username=username, password=password)
         spider.soccer
         sport = spider.browser.find_element_by_class_name(
-        'wl-ClassificationHeader_ClassificationName').text 
-        assert sport == 'Soccer' 
+            'wl-ClassificationHeader_ClassificationName').text
+        assert sport == 'Soccer'
         spider.quit()
+
 
 class TestSoccer():
 
@@ -83,7 +85,7 @@ class TestSoccer():
         spider.soccer._league = self.competition[3]
         yield spider
         spider.quit()
-        
+
     @pytest.mark.action
     def test_expands_country(self, spider):
         spider.soccer._expands_country()
@@ -92,14 +94,14 @@ class TestSoccer():
         country_btn = spider.browser.find_element_by_xpath(xpath)
         btn_status = country_btn.find_element_by_xpath(
             '..').get_attribute('class')
-        assert btn_status == 'sm-Market_HeaderOpen ' 
+        assert btn_status == 'sm-Market_HeaderOpen '
 
     @pytest.mark.action
     def test_request_page(self, spider):
         spider.soccer._request_page()
         league = spider.browser.find_element_by_class_name(
             'cl-EnhancedDropDown').text
-        assert league == spider.soccer._league    
+        assert league == spider.soccer._league
 
     @pytest.mark.action
     def test_request_page_no_data_found_country(self, spider):
@@ -107,14 +109,14 @@ class TestSoccer():
         with pytest.raises(KeyError, match='No data found for'):
             spider.soccer._request_page()
         spider.soccer._country = self.competition[1]
-            
+
     @pytest.mark.action
     def test_request_page_no_data_found_league(self, spider):
         spider.soccer._league = 'foo league'
         with pytest.raises(KeyError, match='No data found for'):
             spider.soccer._request_page()
         spider.soccer._league = self.competition[3]
-            
+
     @pytest.mark.action
     def test_change_market(self, spider):
         market = 'Double Chance'
@@ -140,7 +142,7 @@ class TestSoccer():
             if row[0].isdigit():
                 assert row[0] in datetime_str
             assert row[1] in datetime_str
-        
+
     @pytest.mark.parser
     def test_parse_teams(self, spider):
         spider.soccer._request_page()
@@ -161,35 +163,18 @@ class TestSoccer():
                'Tables need an upgrade, notify the devs.')
         with pytest.raises(KeyError, match=msg):
             home_team, away_team = spider.soccer._parse_teams(row)
-                
+
     # markets
-    
-    @pytest.mark.market
-    def test_events_full_time_result(self, spider):
-        spider.soccer._request_page()
-        events, full_time_result = spider.soccer._events_full_time_result()
-        [print(r) for r in events]
-        [print(e) for e in full_time_result]
-        assert len(events) == len(full_time_result)
 
-    @pytest.mark.market
-    def test_draw_no_bet(self, spider):
-        spider.soccer._request_page()
-        events, draw_no_bet = spider.soccer._draw_no_bet()
-        assert len(events) == len(draw_no_bet)
+    market_funcs = ['_events_full_time_result', '_under_over', '_draw_no_bet',
+                    '_both_teams_to_score', '_double_chance']
 
-    @pytest.mark.market
-    def test_both_teams_to_score(self, spider):
+    @pytest.mark.parametrize('market_func', market_funcs)
+    def test_market(self, spider, market_func):
         spider.soccer._request_page()
-        events, both_teams_to_score = spider.soccer._both_teams_to_score()
-        assert len(events) == len(both_teams_to_score)
+        events, odds = getattr(spider.soccer, market_func)()
+        assert len(events) == len(odds)
 
-    @pytest.mark.market
-    def test_double_chance(self, spider):
-        spider.soccer._request_page()
-        events, double_chance = spider.soccer._double_chance()
-        assert len(events) == len(double_chance)
-            
     # events + odds
 
     @pytest.mark.action
