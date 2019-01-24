@@ -71,9 +71,6 @@ Icon?
 # jupyter notebook for manual testing
 *.ipynb
 
-# autogen docs
-generate_docs.py
-
 # vim swp file
 *.swp
 
