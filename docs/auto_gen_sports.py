@@ -23,11 +23,11 @@ def gen_table_soccer(country, country_id):
     tab += row_0 + row_1
     for k in TABLES['bet365']['soccer'][country]['leagues']:
         row = f'|{k}|'
-        for bookmaker in BOOKMAKERS[0:3:2]:  # other bookmakers needs new format
+        for bookmaker in BOOKMAKERS:
             if TABLES[bookmaker]['soccer'][country]['leagues'][k]['teams']:
-                row += '✓|-|'
+                row += '✓|'
             else:
-                row += '-|-|'
+                row += '-|'
         tab += row + '\n'
     return tab
 
@@ -41,4 +41,4 @@ def gen_doc_soccer():
 ##############################################################################
 
 
-save_file('sports/soccer.md', gen_doc_soccer)
+save_file('soccer.md', gen_doc_soccer)
