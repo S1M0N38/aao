@@ -1,7 +1,7 @@
 import logging
 
 
-def logger(name, console_level='INFO', file_level='DEBUG'):
+def logger(name, console_level='INFO', file_level='DEBUG', **kwargs):
     log = logging.getLogger(name)
     log.setLevel(logging.DEBUG)
 
