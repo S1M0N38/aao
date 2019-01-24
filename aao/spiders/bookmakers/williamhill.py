@@ -1,219 +1,189 @@
-from datetime import datetime as dt
+import datetime
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-from .spider import Spider
+from aao.spiders.spider import Spider
+from aao.spiders import sports
 
 
 class SpiderWilliamhill(Spider):
-    name = 'williamhill'
+    bookmaker = 'williamhill'
     base_url = 'http://sports.williamhill.com/betting/en-gb'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.start_session()
         self._soccer = Soccer(self)
 
-    def start_session(self):
-        self.log.info('starting new session ...')
-        self.homepage()
-
-    def change_odds_format(self, format_: str):
-        # three formats possible: Fraction, Decimal, American. Format
-        # had to be switch to 'Decimal' due to the future type conversion
-        xpath_drop = '//a[text() = "Odds Format "]'
-        drop = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, xpath_drop)))
-        drop.click()
+    def _change_odds_format(self, format_):
+        assert format_ in {'Fraction', 'Decimal', 'American'}
+        self.log.debug(f'setting odds format to {format_} …')
+        locator = (By.XPATH, '//a[text() = "Odds Format "]')
+        dropdown = self.wait.until(EC.element_to_be_clickable(locator))
+        dropdown.click()
+        locator = (By.XPATH, '//a[text() = "Odds Format "]/../ul/li')
+        self.wait.until(EC.visibility_of_all_elements_located(locator))
         xpath_format = (f'//li[@class="subheader__dropdown__item"]/a/'
                         f'span[text() = "{format_}"]/..')
         format_btn = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, xpath_format)))
         format_btn.click()
-        self.log.debug(f'set odds format to {format_}')
 
     @property
     def soccer(self):
         return self._soccer
 
 
-class Soccer(SpiderWilliamhill):
+class Soccer(sports.Soccer):
 
-    def __init__(self, other):
-        self.browser = other.browser
-        self.log = other.log
-        self.table = other.table
-        self.wait = other.wait
-        self.countries_dict = self.table['soccer']['countries']
-        self.leagues_dict = self.table['soccer']['leagues']
-        self.teams_dict = self.table['soccer']['teams']
+    def __init__(self, spider):
+        super().__init__(spider)
 
-    def _request_page(self, url):
+    def _request_page(self):
+        self.log.debug(f'requesting page {self.country} - {self.league} …')
+        url = f'{self.base_url}/football/competitions/{self._league}/matches'
         self.browser.get(url)
-        self.change_odds_format('Decimal')
+        self._change_odds_format('Decimal')
+        locator = (By.XPATH, '//div[@data-test-id="events-group"]')
         try:
-            self.wait.until(EC.visibility_of_all_elements_located(
-                (By.XPATH, '//div[@data-test-id="events-group"]')))
+            self.wait.until(EC.visibility_of_all_elements_located(locator))
         except TimeoutException:
-            msg = f'no data found for {self.league_std} for this market'
+            msg = f'No data found for {self.country} - {self.league}.'
             self.log.error(msg)
-            raise KeyError(f'{msg}. It seems this league does not have odds ')
+            raise KeyError(f'{msg} This competition does not have odds')
 
-    def _matches(self) -> tuple:
-        events = []
-        odds = []
-        url = f'{self.base_url}/football/competitions/{self.league}/matches'
-        self._request_page(url)
-        self.log.debug(f'requesting page {self.country_std}, {self.league_std}')
-        self.log.info(f'* scraping: {self.country_std} - {self.league_std} *')
+    def _change_market(self, market):
+        markets = {'Match Betting', 'Both Teams To Score', 'Double Chance',
+                   'Total Match Goals Over/Under 2.5 Goals'}
+        assert market in markets
+        locator = (By.XPATH, f'//li[@class="css-xnumgp"]//a[.="{market}"]')
+        market_btn = self.wait.until(EC.element_to_be_clickable(locator))
+        market_btn.click()
+        locator = (By.CLASS_NAME, 'sp-betbutton')
+        self.wait.until(EC.visibility_of_all_elements_located(locator))
 
-        # events and full time result
-        table = self.wait.until(
-            EC.visibility_of_element_located((By.ID, 'football')))
-        days = table.find_elements_by_xpath(
-            '//div[@data-test-id="events-group"'
-            'and contains(div, "90 Minutes")]')
-        for day in days:
-            date = day.find_element_by_tag_name('span').text.strip('\n')
-            rows = day.find_elements_by_tag_name('article')
-            for row in rows:
-                _time = row.find_element_by_class_name(
-                    'sp-o-market__clock').text
-                teams = row.find_element_by_class_name(
-                    'sp-o-market__title').text
-                home_team, away_team = teams.split(' v ')
-                try:
-                    home_team = self.teams_dict[home_team]
-                    away_team = self.teams_dict[away_team]
-                except KeyError:
-                    msg = f'It seems that table/{self.name}.json'
-                    raise KeyError(msg)
-                odds_btn = row.find_elements_by_tag_name('button')
-                _1, _X, _2 = [o.text for o in odds_btn]
-                dt_str = ' '.join([str(dt.now().year), date, _time])
-                datetime = dt.strptime(dt_str, '%Y %a %b %d %H:%M')
-                timestamp = int(dt.timestamp(datetime))
-                event = {
-                    'timestamp': timestamp,
-                    'datetime': datetime,
-                    'country': self.country_std,
-                    'league': self.league_std,
-                    'home_team': home_team,
-                    'away_team': away_team
-                }
-                odd = {
-                    'full_time_result': {
-                        '1': float(_1),
-                        'X': float(_X),
-                        '2': float(_2)
-                    }
-                }
-                events.append(event)
-                odds.append(odd)
-        self.log.debug(' * got events data')
-        self.log.debug(' * got 1 x 2 odds')
+    def _get_rows(self):
+        days = {'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'}
+        xpath = ('//div[@id="football"]//*[self::header or self::article]'
+                 '[contains(@class, "sp-o-market sp-o-market--default")]')
+        rows = []
+        for row in self.browser.find_elements_by_xpath(xpath):
+            values = row.text.split('\n')
+            if values[0][:3] in days:
+                date = values[0]
+                continue
+            rows.append([date] + values)
+        return rows
 
-        # get link for other market
-        markets_links = self.browser.find_elements_by_xpath(
-            '//div[@data-test-id="carousel"]//a[@href]')
-        url = 'http://sports.williamhill.com'
-        links = [link.get_attribute('href') for link in markets_links]
+    def _parse_datetime(self, row):
+        format_ = '%a %d %b'
+        date = datetime.date.today()
+        while date.strftime(format_) != row[0]:
+            date += datetime.timedelta(1)
+        time = datetime.datetime.strptime(row[1], '%H:%M').time()
+        return datetime.datetime.combine(date, time)
 
-        def find_event_index(row):
-            teams = row.find_element_by_class_name(
-                'sp-o-market__title').text
-            home_team, away_team = teams.split(' v ')
-            try:
-                home_team = self.teams_dict[home_team]
-                away_team = self.teams_dict[away_team]
-            except KeyError:
-                msg = f'It seems that table/{self.name}.json'
-                raise KeyError(msg)
-            for i, e in enumerate(events):
-                if e['home_team'] == home_team and \
-                   e['away_team'] == away_team:
-                    return i
+    def _parse_teams(self, row):
+        teams, msg = [], ''
+        for i in row[2].split(' v '):
+            team = self.teams(self.country, self.league, full=True).get(i)
+            teams.append(team)
+            if not team:
+                msg = f'{i} not in bookmaker teams table. ' + msg
+        if None in teams:
+            raise KeyError(msg + 'Tables need an upgrade, notify the devs.')
+        return teams
 
-        # both teams to score
-        self._request_page(links[1])
-        table = self.wait.until(
-            EC.visibility_of_element_located((By.ID, 'football')))
-        days = table.find_elements_by_xpath(
-            '//div[@data-test-id="events-group"'
-            'and contains(div, "Both Teams To Score")]')
-        for day in days:
-            rows = day.find_elements_by_tag_name('article')
-            for row in rows:
-                i = find_event_index(row)
-                odds_btn = row.find_elements_by_tag_name('button')
-                yes, no = [o.text for o in odds_btn]
-                odds[i]['both_teams_to_score'] = {
-                    'yes': float(yes), 'no': float(no)}
-        self.log.debug(' * got both teams to score odds')
+    def _parse_event(self, row):
+        datetime = self._parse_datetime(row)
+        home_team, away_team = self._parse_teams(row)
+        event = {
+            'datatime': datetime,
+            'country': self.country,
+            'league': self.league,
+            'home_team': home_team,
+            'away_team': away_team,
+            # 'home_goal': 0,
+            # 'away_goal': 0,
+        }
+        return event
 
-        # under over 2.5
-        self._request_page(links[3])
-        table = self.wait.until(
-            EC.visibility_of_element_located((By.ID, 'football')))
-        days = table.find_elements_by_xpath(
-            '//div[@data-test-id="events-group"'
-            'and contains(div, "Total Match Goals Over/Under 2.5 Goals")]')
-        for day in days:
-            rows = day.find_elements_by_tag_name('article')
-            for row in rows:
-                i = find_event_index(row)
-                odds_btn = row.find_elements_by_tag_name('button')
-                under, over = [o.text for o in odds_btn]
-                odds[i]['under_over'] = {
-                    'under': float(under), 'over': float(over)}
-        self.log.debug(' * got under/over 2.5 odds')
+    def _parse_full_time_result(self, row):
+        return {'1': float(row[3]), 'X': float(row[4]), '2': float(row[5])}
 
-        # double chance
-        self._request_page(links[5])
-        table = self.wait.until(
-            EC.visibility_of_element_located((By.ID, 'football')))
-        days = table.find_elements_by_xpath(
-            '//div[@data-test-id="events-group"'
-            'and contains(div, "Double Chance")]')
-        for day in days:
-            rows = day.find_elements_by_tag_name('article')
-            for row in rows:
-                i = find_event_index(row)
-                odds_btn = row.find_elements_by_tag_name('button')
-                _1X, _X2, _12 = [o.text for o in odds_btn]
-                odds[i]['double_chance'] = {
-                    '1X': float(_1X), 'X2': float(_X2), '12': float(_12)}
-        self.log.debug(' * got double chance odds')
+    def _parse_under_over(self, row):
+        return {'under': float(row[4]), 'over': float(row[3])}
 
-        # draw no bet NOT AVAIABLE
+    def _parse_both_teams_to_score(self, row):
+        return {'yes': float(row[3]), 'no': float(row[4])}
 
-        return events, odds
+    def _parse_double_chance(self, row):
+        return {'1X': float(row[3]), 'X2': float(row[4]), '12': float(row[5])}
 
-    def odds(self, country_std: str, league_std: str) -> tuple:
-        msg_to_docs = 'Check the docs for a list of supported competitions'
-        try:
-            self.country_std = country_std
-            self.country = self.countries_dict[country_std]
-        except KeyError:
-            msg = f'{country_std} not found in {self.name} table'
-            self.log.error(msg)
-            raise KeyError(f'{msg}. {msg_to_docs}')
-        if self.country is None:
-            msg = f'{country_std} not supported in {self.name}'
-            self.log.error(msg)
-            raise KeyError(f'{msg}. {msg_to_docs}')
-        try:
-            self.league_std = league_std
-            self.league = self.leagues_dict[country_std][league_std]
-        except KeyError:
-            msg = f'{country_std} - {league_std} not found in {self.name} table'
-            self.log.error(msg)
-            raise KeyError(f'{msg}. {msg_to_docs}')
-        if self.league is None:
-            msg = f'{country_std} - {league_std} not supported in {self.name}'
-            self.log.error(msg)
-            raise KeyError(f'{msg}. {msg_to_docs}')
-        events, odds = self._matches()
-        return events, odds
+    def _events_full_time_result(self):
+        events, full_time_result = [], []
+        self._change_market('Match Betting')
+        rows = self._get_rows()
+        for row in rows:
+            events.append(self._parse_event(row))
+            full_time_result.append(self._parse_full_time_result(row))
+        return events, full_time_result
+
+    def _under_over(self):
+        events, under_over = [], []
+        self._change_market('Total Match Goals Over/Under 2.5 Goals')
+        rows = self._get_rows()
+        for row in rows:
+            events.append(self._parse_event(row))
+            under_over.append(self._parse_under_over(row))
+        return events, under_over
+
+    def _both_teams_to_score(self):
+        events, both_teams_to_score = [], []
+        self._change_market('Both Teams To Score')
+        rows = self._get_rows()
+        for row in rows:
+            events.append(self._parse_event(row))
+            both_teams_to_score.append(self._parse_both_teams_to_score(row))
+        return events, both_teams_to_score
+
+    def _double_chance(self):
+        events, double_chance = [], []
+        self._change_market('Double Chance')
+        rows = self._get_rows()
+        for row in rows:
+            events.append(self._parse_event(row))
+            double_chance.append(self._parse_double_chance(row))
+        return events, double_chance
+
+    @staticmethod
+    def _sort_odds(events, odds_events, odds):
+        # match odds to its relative events.
+        # Useful if rows are mixed between markets
+        keys = [odds_events.index(e) for e in events]
+        odds = [odds[k] for k in keys]
+        return odds
+
+    def _events_odds(self, events_only=False):
+        self._odds = []
+        self._request_page()
+        self._events, full_time_result = self._events_full_time_result()
+        if events_only:
+            return self._events
+        under_over = self._sort_odds(
+            self._events, *self._under_over())
+        both_teams_to_score = self._sort_odds(
+            self._events, *self._both_teams_to_score())
+        double_chance = self._sort_odds(
+            self._events, *self._double_chance())
+        for i in range(len(self._events)):
+            self._odds.append([
+                {'full_time_result': full_time_result[i]},
+                {'under_over': under_over[i]},
+                {'draw_no_bet': None},  # doesn't exists
+                {'both_teams_to_score': both_teams_to_score[i]},
+                {'double_chance': double_chance[i]},
+            ])
+        return self._events, self._odds
+
