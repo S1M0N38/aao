@@ -11,7 +11,7 @@ Every country have differnt about gambling, so we decide to develope the spiders
 ```python
 from aao.spiders import SpiderBet365
 
-spider = SpiderBet365('username', 'password')
+spider = SpiderBet365(username='username', password='password')
 ```
 If you try to use a VPN with bet365 the site doesn't work. So, if you want to access to the english version you have to create a *english account*. Creating an account is free and you do not even have to verify your identity.
 
@@ -49,10 +49,10 @@ After you have define a spider, now you are ready to scrape odds for any sports.
 > For Great Britain, soccer means football. We decice to name it 'Soccer' in order to avoid confusion with 'American football'
 
 ```python
-odds = spider.soccer.odds('italy', 'serie_a')
+events, odds = spider.soccer.odds('italy', 'serie_a')
 ```
 
-*.soccer.odds()* function accepts to arguments: **country** and **leagues**. Bookmakers support different leagues but major leagues are avaiable on every bookmaker. Down here there is the list of supported leagues
+**.soccer.odds()** function accepts to arguments: **country** and **leagues**. Bookmakers support different leagues but major leagues are avaiable on every bookmaker. Take a look at the *sports/soccer* for a list of supported leagues.
 
 ### OtherSport
 
