@@ -6,7 +6,7 @@ from aao.spiders import Spider888sport
 
 
 PROXY = os.environ['PROXY']
-COMPETIONS = [
+COMPETITIONS = [
     # country, _country, league, _league, page_name
     ['england', 'england', 'premier_league', 'premier_league', 'Premier League'],
     ['england', 'england', 'elf_championship', 'the_championship', 'The Championship'],
@@ -23,7 +23,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETIONS[2]
+    competition = COMPETITIONS[2]
 
     @pytest.fixture(scope='module')
     def spider(self):
