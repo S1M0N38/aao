@@ -1,107 +1,140 @@
-import unittest
+import pytest
 
 from aao.spiders import SpiderBwin
 
 
-class SpiderTest(unittest.TestCase):
-    headless = False
-    log_level = 'CRITICAL'
-    proxy = None
+COMPETITIONS = [
+    # country, _country, league, _league, page_name
+    ['england', 'england', 'premier_league', '46', 'Premier League Betting Odds'],
+    ['england', 'england', 'elf_championship', '3890', 'Championship Betting Odds'],
+    ['italy', 'italy', 'serie_a', '42', 'Serie A Odds'],
+    ['spain', 'spain', 'la_liga', '16108', 'La Liga Odds'],
+]
 
-    @classmethod
-    def setUpClass(self):
-        self.s = SpiderBwin(log_level_console=self.log_level,
-                            headless=self.headless,
-                            proxy=self.proxy)
 
-    @classmethod
-    def tearDownClass(self):
-        self.s.quit()
+class TestSpider():
 
     def test_soccer(self):
         pass
 
 
-class SoccerTest(unittest.TestCase):
-    headless = False
-    log_level = 'CRITICAL'
-    proxy = None
+class TestSoccer():
 
-    @classmethod
-    def setUpClass(self):
-        self.s = SpiderBwin(log_level_console=self.log_level,
-                            headless=self.headless,
-                            proxy=self.proxy)
-        # country
-        self.country_not_exists = 'this_country_does_not_exixts'
-        self.country_null = 'test_country_null'
-        self.country_foo = 'test_country_foo'
-        self.country_std = 'england'
-        self.country = 'england'
-        # league
-        self.league_not_exists = '999'  # remenber bwin store league as ids
-        self.league_null = 'test_league_null'
-        self.league_foo = 'test_league_foo'
-        self.league_std = 'premier_league'
-        self.league = '46'
-        # page request params
-        self.wrong_page_num = 999
-        self.market_id_not_supported = ('25', '10', '1')
-        self.market_ids = ('25', '31', '190', '261', '359')
+    competition = COMPETITIONS[0]
 
-    @classmethod
-    def tearDownClass(self):
-        self.s.quit()
+    @pytest.fixture(scope='module')
+    def spider(self):
+        spider = SpiderBwin()
+        spider.soccer.country = self.competition[0]
+        spider.soccer._country = self.competition[1]
+        spider.soccer.league = self.competition[2]
+        spider.soccer._league = self.competition[3]
+        yield spider
+        spider.quit()
 
-    def test_country_not_exists(self):
-        with self.assertRaises(KeyError) as context:
-            self.s.soccer.odds(self.country_not_exists, self.league_std)
-        msg = f'{self.country_not_exists} not found in {self.s.name} table'
-        self.assertIn(msg, str(context.exception))
+    @pytest.fixture(scope='module')
+    def rows_dict(self, spider):
+        spider.soccer._request_page()
+        rows_dict = spider.soccer._get_rows()
+        yield rows_dict
 
-    def test_league_not_exists(self):
-        with self.assertRaises(KeyError) as context:
-            self.s.soccer.odds(self.country_std, self.league_not_exists)
-        msg = f'{self.league_not_exists} not found in {self.s.name} table'
-        self.assertIn(msg, str(context.exception))
+    @pytest.mark.parametrize('page_num', [0, 1])
+    def test_request_page_0(self, spider, page_num):
+        spider.soccer._request_page(page=page_num)
+        class_name = 'sports-info-header__header'
+        league = spider.browser.find_element_by_class_name(class_name).text
+        assert league == self.competition[4]
+        xpath = f'//li[@class="page-link" and contains(.,"{page_num + 1}")]/a'
+        page_element = spider.browser.find_element_by_xpath(xpath)
+        assert page_element.get_attribute('class') == 'active-page-link'
 
-    def test_country_not_supported(self):
-        # the country appear in spider table but the value is null
-        with self.assertRaises(KeyError) as context:
-            self.s.soccer.odds(self.country_null, self.league_std)
-        msg = f'{self.country_null} not supported in {self.s.name}'
-        self.assertIn(msg, str(context.exception))
+    def test_request_page_only_events(self, spider):
+        spider.soccer._request_page(events_only=True)
+        class_name = 'sports-info-header__header'
+        league = spider.browser.find_element_by_class_name(class_name).text
+        assert league == self.competition[4]
+        assert not ('25,359,31,190,261' in spider.browser.current_url)
 
-    def test_league_not_supported(self):
-        # the league appear in spider table but the value is null
-        with self.assertRaises(KeyError) as context:
-            self.s.soccer.odds(self.country_foo, self.league_null)
-        msg = f'{self.league_null} not supported in {self.s.name}'
-        self.assertIn(msg, str(context.exception))
+    def test_page_number(self, spider):
+        spider.soccer._request_page()
+        page_number = spider.soccer._page_number()
+        assert page_number > 1
 
-    def test_reuqest_page_wrong_league_or_wrong_page_num(self):
-        # page number is too big (out of index) so no odds are avaiable.
-        self.s.soccer.league = self.league
-        self.s.soccer.league_std = self.league_std
-        with self.assertRaises(KeyError) as context:
-            self.s.soccer._request_page(self.market_ids, self.wrong_page_num)
-        msg = f'no data found for {self.league_std} on page {self.wrong_page_num}'
-        self.assertIn(msg, str(context.exception))
+    def test_page_number_not_found(self, spider):
+        spider.soccer._request_page(events_only=True)
+        page_number = spider.soccer._page_number()
+        assert page_number == 0
 
-    def test_request_page_market_id_not_supported(self):
-        self.s.soccer.league = self.league
-        with self.assertRaises(KeyError) as context:
-            self.s.soccer._request_page(self.market_id_not_supported, 0)
-        msg = (f'is not supported. Supported market_id are '
-               f'{list(self.s.soccer.market_ids)}')
-        self.assertIn(msg, str(context.exception))
+    def test_request_page_no_data_found(self, spider):
+        with pytest.raises(KeyError, match='No data found for'):
+            spider.soccer._country = 'foo_country'
+            spider.soccer._league = '213'
+            spider.soccer._request_page()
+            msg = spider.browser.find_element_by_class_name(
+                'content-message').text
+            assert msg == 'The selected offer is currently not available.'
+        spider.soccer._country = self.competition[1]
+        spider.soccer._league = self.competition[3]
 
-    def test_max_page_num(self):
-        self.s.soccer.league = self.league
-        max_page_num = self.s.soccer._max_page()
-        self.assertGreaterEqual(max_page_num, 0)
+    def test_get_rows(self, rows_dict):
+        assert rows_dict
 
-    def test_odds_right(self):
-        events, odds = self.s.soccer.odds(self.country_std, self.league_std)
-        self.assertGreater(len(events), 0)
-        self.assertEqual(len(events), len(odds))
+    # parse
+
+    def test_parse_datetime(self, spider):
+        spider.soccer._request_page(events_only=True)
+        rows_dict = spider.soccer._get_rows(events_only=True)
+        rows = rows_dict['full_time_result']
+        for row in rows:
+            datetime_str = str(spider.soccer._parse_datetime(row))
+            month, day, year = row[0].split(' - ')[-1].split('/')
+            date = '-'.join([year, month.zfill(2), day.zfill(2)])
+            assert date in datetime_str
+
+    def test_parse_teams(self, spider):
+        spider.soccer._request_page(events_only=True)
+        rows_dict = spider.soccer._get_rows(events_only=True)
+        rows = rows_dict['full_time_result']
+        teams = spider.soccer.teams(
+            spider.soccer.country, spider.soccer.league, full=True)
+        for row in rows:
+            home_team, away_team = spider.soccer._parse_teams(row)
+            i = row.index('X')
+            assert home_team in teams.values() and row[i - 2] in teams
+            assert away_team in teams.values() and row[i + 2] in teams
+
+    def test_parse_teams_team_not_in_table(self, spider):
+        row = ['Wednesday - 1/30/2019', '9:00 PM', '+106',
+               'foo_home_team', '1.65', 'X', '3.90', 'foo_away_team', '5.25']
+        msg = ('foo_away_team not in bookmaker teams table. '
+               'foo_home_team not in bookmaker teams table. '
+               'Tables need an upgrade, notify the devs.')
+        with pytest.raises(KeyError, match=msg):
+            home_team, away_team = spider.soccer._parse_teams(row)
+
+    # markets
+
+    odds_types = ['full_time_result', 'under_over', 'draw_no_bet',
+                  'both_teams_to_score', 'double_chance']
+
+    @pytest.mark.parametrize('odds_type', odds_types)
+    def test_market(self, spider, rows_dict, odds_type):
+        events, odds = spider.soccer._market(
+            rows_dict[odds_type], f'_parse_{odds_type}')
+        assert len(events) == len(odds)
+
+    # events + odds
+
+    def test_events_odds(self, spider, rows_dict):
+        events, odds = spider.soccer._events_odds()
+        assert events
+        assert odds
+        # for e, o in zip(events, odds):
+        #     print(e)
+        #     print(o)
+        #     print()
+
+    def test_events_odds_events_only(self, spider):
+        events = spider.soccer._events_odds(events_only=True)
+        assert events
+
