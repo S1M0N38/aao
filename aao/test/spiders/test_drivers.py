@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pytest
 
@@ -14,6 +15,8 @@ class TestChromeDriver:
         driver = ChromeDriver(headless=True)
         assert driver.options.headless
 
+    @pytest.mark.skipif(
+        sys.platform == 'linux', reason='not working in ci env')
     def test_set_headless_false(self):
         driver = ChromeDriver(headless=False)
         assert not driver.options.headless
