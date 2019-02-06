@@ -6,6 +6,9 @@ python:
 addons:
     chrome: stable
 
+services:
+  - xvfb
+
 notifications:
     email: false
 
@@ -27,16 +30,16 @@ jobs:
         - stage: 888sport
           script:
             # can't use for mark 888sport or _888sport
-            - pipenv run pytest -m eight88sport
+            - xvfb-run pipenv run pytest -m eight88sport
         - stage: bet365
           script:
-            - pipenv run pytest -m bet365
+            - xvfb-run pipenv run pytest -m bet365
         - stage: bwin
           script:
-            - pipenv run pytest -m bwin
+            - xvfb-run pipenv run pytest -m bwin
         - stage: williamhill
           script:
-            - pipenv run pytest -m williamhill
+            - xvfb-run pipenv run pytest -m williamhill
 
 after_success: 
     # Upload coverage to Codacy
