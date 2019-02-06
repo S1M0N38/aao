@@ -1,6 +1,7 @@
 language: python
+
 python:
-  - "3.6"
+    - "3.6"
 
 addons:
     chrome: stable
@@ -21,12 +22,9 @@ install:
     - pip install pipenv --upgrade
     - pipenv install --dev --skip-lock
 
+script:
+    - pipenv run pytest --reruns 3
 
-jobs:
-    include:
-    - stage: test
-      script:
-          - pipenv run pytest --reruns 3
-    - stage: coverage
-      script:
-          - pipenv run python-codacy-coverage -r coverage.xml
+after_success: 
+    # Upload coverage to Codacy
+    - pipenv run python-codacy-coverage -r coverage.xml
