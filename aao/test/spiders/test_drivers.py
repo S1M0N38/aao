@@ -32,7 +32,7 @@ class TestChromeDriver:
 
     def test_set_proxy(self):
         driver = ChromeDriver(proxy=PROXY)
-        driver.browser.get('https://ipinfo.io/ip')
+        driver.browser.get('https://wtfismyip.com/text')
         ip_found = driver.browser.find_element_by_tag_name('body').text
         assert PROXY.split(':')[1][2:] == ip_found
 
