@@ -26,7 +26,7 @@ jobs:
     include:
     - stage: test
       script:
-          - pipenv run pytest
+          - pipenv run pytest --reruns 3
     - stage: coverage
       script:
           - pipenv run python-codacy-coverage -r coverage.xml
