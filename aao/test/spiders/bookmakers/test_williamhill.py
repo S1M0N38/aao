@@ -3,6 +3,8 @@ import pytest
 from aao.spiders import SpiderWilliamhill
 
 
+pytestmark = pytest.mark.williamhill
+
 COMPETITIONS = [
     # country, _country, league, _league, page_name
     ['england', 'england', 'premier_league', 'English-Premier-League', 'English Premier League'],
@@ -20,7 +22,6 @@ class TestSpider():
         yield spider
         spider.quit()
 
-    @pytest.mark.action
     @pytest.mark.parametrize('format_', ['Fraction', 'Decimal', 'American'])
     def test_change_odds_format(self, spider, format_):
         spider._change_odds_format(format_)
@@ -50,13 +51,11 @@ class TestSoccer():
         yield spider
         spider.quit()
 
-    @pytest.mark.action
     def test_request_page(self, spider):
         spider.soccer._request_page()
         league = spider.browser.find_element_by_class_name('header-title')
         assert league.text == self.competition[4]
 
-    @pytest.mark.action
     def test_request_page_no_data_found(self, spider):
         with pytest.raises(KeyError, match='No data found for'):
             spider.soccer._country = 'foo_country'
@@ -67,7 +66,6 @@ class TestSoccer():
         spider.soccer._country = self.competition[1]
         spider.soccer._league = self.competition[3]
 
-    @pytest.mark.action
     def test_change_market(self, spider):
         spider.soccer._request_page()
         spider.soccer._change_market('Double Chance')
@@ -75,7 +73,6 @@ class TestSoccer():
         market = spider.browser.find_element_by_xpath(xpath).text
         assert market == 'Double Chance'
 
-    @pytest.mark.action
     def test_get_rows(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
@@ -84,7 +81,6 @@ class TestSoccer():
 
     # parse
 
-    @pytest.mark.parser
     def test_parse_datetime(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
@@ -94,7 +90,6 @@ class TestSoccer():
                 assert row[0][4:6] in datetime_str
             assert row[1] in datetime_str
 
-    @pytest.mark.parser
     def test_parse_teams(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
@@ -106,7 +101,6 @@ class TestSoccer():
             assert home_team in teams.values() and row[2] in teams
             assert away_team in teams.values() and row[3] in teams
 
-    @pytest.mark.parser
     def test_parse_teams_team_not_in_table(self, spider):
         row = ['Sun 20 Jan', '14:00', 'foo_home_team v foo_away_team']
         msg = ('foo_away_team not in bookmaker teams table. '
@@ -128,7 +122,6 @@ class TestSoccer():
 
     # events + odds
 
-    @pytest.mark.action
     def test_events_odds(self, spider):
         events, odds = spider.soccer._events_odds()
         assert events
@@ -138,7 +131,6 @@ class TestSoccer():
         #     print(o)
         #     print()
 
-    @pytest.mark.action
     def test_events_odds_events_only(self, spider):
         events = spider.soccer._events_odds(events_only=True)
         assert events

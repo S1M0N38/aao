@@ -3,6 +3,8 @@ import pytest
 from aao.spiders import SpiderBwin
 
 
+pytestmark = pytest.mark.bwin
+
 COMPETITIONS = [
     # country, _country, league, _league, page_name
     ['england', 'england', 'premier_league', '46', 'Premier League Betting Odds'],
@@ -125,7 +127,7 @@ class TestSoccer():
 
     # events + odds
 
-    def test_events_odds(self, spider, rows_dict):
+    def test_events_odds(self, spider):
         events, odds = spider.soccer._events_odds()
         assert events
         assert odds
