@@ -22,9 +22,23 @@ install:
     - pip install pipenv --upgrade
     - pipenv install --dev --skip-lock
 
-script:
-    - pipenv run pytest --reruns 3
+jobs:
+    include:
+        - stage: 888sport
+          script:
+            # can't use for mark 888sport or _888sport
+            - pipenv run pytest -m eight88sport
+        - stage: bet365
+          script:
+            - pipenv run pytest -m bet365
+        - stage: bwin
+          script:
+            - pipenv run pytest -m bwin
+        - stage: williamhill
+          script:
+            - pipenv run pytest -m williamhill
 
 after_success: 
     # Upload coverage to Codacy
     - pipenv run python-codacy-coverage -r coverage.xml
+
