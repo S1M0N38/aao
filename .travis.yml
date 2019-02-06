@@ -12,7 +12,7 @@ services:
 notifications:
     email: false
 
-install:
+before_install:
     # Install ChromeDriver
     - wget -N https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip -P ~/
     - unzip ~/chromedriver_linux64.zip -d ~/
@@ -23,7 +23,9 @@ install:
 
     # Install pipenv
     - pip install pipenv --upgrade
-    - pipenv install --dev --skip-lock
+    - pipenv lock -r >> reqs.txt
+    - pipenv lock -r --dev >> reqs.txt
+    - pip install -r reqs.txt
 
 jobs:
     include:
@@ -40,8 +42,8 @@ jobs:
         - stage: williamhill
           script:
             - xvfb-run pipenv run pytest -m williamhill
-
-after_success: 
-    # Upload coverage to Codacy
-    - pipenv run python-codacy-coverage -r coverage.xml
+        - stage: upload coverage
+          script:
+            # Upload coverage to Codacy
+            - pipenv run python-codacy-coverage -r coverage.xml
 
