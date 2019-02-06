@@ -8,12 +8,13 @@ aao = {editable = true, path = "."}
 
 [dev-packages]
 pytest = "*"
-flake8 = "*"
 bpython = "*"
 jupyter = "*"
 pytest-rerunfailures = "*"
 pytest-cov = "*"
 codacy-coverage = "*"
+pytest-sugar = "*"
+"flake8" = "*"
 
 [requires]
 python_version = "3.7"
