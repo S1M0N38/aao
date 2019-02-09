@@ -78,7 +78,8 @@ class Soccer(sports.Soccer):
     def _parse_datetime(self, row):
         format_ = '%a %d %b'
         date = datetime.date.today()
-        while date.strftime(format_) != row[0]:
+        # in some version the format is ['Sat, 09 Feb', ...]
+        while date.strftime(format_) != row[0].replace(',', ''):
             date += datetime.timedelta(1)
         time = datetime.datetime.strptime(row[1], '%H:%M').time()
         return datetime.datetime.combine(date, time)
