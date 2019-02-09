@@ -23,7 +23,7 @@ jobs:
         - stage: 888sport
           script:
             # can't use for mark 888sport or _888sport
-            - xvfb-run pipenv run pytest -m eight88sport
+            - xvfb-run pipenv run pytest -m eight88sport --proxy $PROXY
         - stage: bet365
           script:
             - xvfb-run pipenv run pytest -m bet365
