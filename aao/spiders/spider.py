@@ -19,7 +19,8 @@ class Spider(ABC):
 
     """
 
-    def __init__(self, driver=ChromeDriver, **kwargs):
+    def __init__(self, driver=ChromeDriver,
+                 username=None, password=None, **kwargs):
         """Init the spider, open the browser and start the log
 
         Args:
