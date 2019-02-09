@@ -20,13 +20,9 @@ install:
 
 jobs:
     include:
-        - stage: test
-          script:
-            # can't use for mark 888sport or _888sport
-            - xvfb-run pipenv run pytest -m eight88sport --proxy $PROXY
-          script:
-            - xvfb-run pipenv run pytest -m bet365
-          script:
-            - xvfb-run pipenv run pytest -m bwin
-          script:
-            - xvfb-run pipenv run pytest -m williamhill
+        - script: xvfb-run pipenv run pytest -m eight88sport --proxy $PROXY
+        - script: xvfb-run pipenv run pytest -m bet365
+        - script: xvfb-run pipenv run pytest -m bwin
+        - script: xvfb-run pipenv run pytest -m williamhill
+        - stage: coverage
+          script: make coverage
