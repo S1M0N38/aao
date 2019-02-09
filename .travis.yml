@@ -8,9 +8,6 @@ cache: pip
 addons:
   chrome: stable
 
-services:
-  - xvfb
-
 notifications:
   email: false
 
@@ -21,9 +18,9 @@ install:
 jobs:
   include:
     - script: 
-      - xvfb-run pipenv run pytest -m eight88sport --proxy $PROXY
-      - xvfb-run pipenv run pytest -m bet365
-      - xvfb-run pipenv run pytest -m bwin
-      - xvfb-run pipenv run pytest -m williamhill --proxy $PROXY
-    - stage: coverage
-      script: make coverage
+      - pipenv run pytest -m eight88sport --proxy $PROXY
+      - pipenv run pytest -m bet365
+      - pipenv run pytest -m bwin
+      - pipenv run pytest -m williamhill --proxy $PROXY
+      - pipenv run pytest --ignore=aao/test/spiders/bookmakers
+      - make coverage
