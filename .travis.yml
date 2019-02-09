@@ -8,18 +8,22 @@ cache: pip
 addons:
   chrome: stable
 
+services:
+  - xvfb
+
 notifications:
   email: false
 
-before_install: 
+install: 
   - make chromedriver
   - make pipenv
 
 jobs:
   include:
-    - script: pytest -m eight88sport --proxy $PROXY
-    - script: pytest -m bet365
-    - script: pytest -m bwin
-    - script: pytest -m williamhill
+    - script: 
+      - xvfb-run pipenv run pytest -m eight88sport --proxy $PROXY
+      - xvfb-run pipenv run pytest -m bet365
+      - xvfb-run pipenv run pytest -m bwin
+      - xvfb-run pipenv run pytest -m williamhill --proxy $PROXY
     - stage: coverage
       script: make coverage
