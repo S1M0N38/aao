@@ -17,9 +17,9 @@ install:
 
 jobs:
   include:
-    - script: pipenv run pytest -m eight88sport --proxy $PROXY
-    - script: pipenv run pytest -m bet365
-    - script: pipenv run pytest -m bwin
-    - script: pipenv run pytest -m williamhill
+    - script: pytest -m eight88sport --proxy $PROXY
+    - script: pytest -m bet365
+    - script: pytest -m bwin
+    - script: pytest -m williamhill
     - stage: coverage
       script: make coverage
