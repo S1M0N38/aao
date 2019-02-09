@@ -1,11 +1,13 @@
 - Spiders
-    - [Spiders](spiders/spiders.md)
+
+    - [Spiders](spiders.md)
 
 - Api
-    - [Request](api/api.md)
+
+    - [Request](api.md)
 
 - Sports
-    - [Soccer](sports/soccer.md)
 
-- Other
-    - [License](other/LICENSE.md)
+    - [Soccer](soccer.md)
+
+- [License](LICENSE.md)

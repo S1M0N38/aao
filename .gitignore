@@ -31,11 +31,8 @@ MANIFEST
 *.manifest
 *.spec
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
 # Unit test / coverage reports
+.pytest_cache/
 htmlcov/
 .tox/
 .coverage
@@ -45,24 +42,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-.hypothesis/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-.static_storage/
-.media/
-local_settings.py
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
 
 # Sphinx documentation
 docs/_build/
@@ -76,30 +55,8 @@ target/
 # pyenv
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
-
-# SageMath parsed files
-*.sage.py
-
 # Environments
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
 
 # mac files
 .DS_Store
@@ -114,13 +71,9 @@ Icon?
 # jupyter notebook for manual testing
 *.ipynb
 
-# for digitalocean dev
-sync.sh
+# vim swp file
+*.swp
 
+# log file
+*.log
 
-# VPN stuff
-vpn.py
-vpn/
-
-# autogen docs
-generate_docs.py

@@ -7,7 +7,14 @@ name = "pypi"
 aao = {editable = true, path = "."}
 
 [dev-packages]
-python-language-server = {version = "*", extras = ["all"]}
+pytest = "*"
+bpython = "*"
+jupyter = "*"
+pytest-rerunfailures = "*"
+pytest-cov = "*"
+codacy-coverage = "*"
+pytest-sugar = "*"
+"flake8" = "*"
 
 [requires]
 python_version = "3.7"

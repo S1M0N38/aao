@@ -1,75 +1,26 @@
 language: python
+
 python:
   - "3.6"
 
+cache: pip
+
 addons:
-    chrome: stable
-    artifacts:
-        paths:
-            - $(ls *.log | tr "\n" ":")
+  chrome: stable
 
 notifications:
-    email: false
+  email: false
 
-install:
-    # Install ChromeDriver
-    - wget -N https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip -P ~/
-    - unzip ~/chromedriver_linux64.zip -d ~/
-    - rm ~/chromedriver_linux64.zip
-    - sudo mv -f ~/chromedriver /usr/local/share/
-    - sudo chmod +x /usr/local/share/chromedriver
-    - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
-    # Install pipenv
-    - pip install pipenv --upgrade
-    - pipenv install --dev --skip-lock
-
+install: 
+  - make chromedriver
+  - make pipenv
 
 jobs:
-    include:
-
-    # python 3.6 test
-    - stage: test
-      script:
-          - pipenv run python test.py bet365 -hd -vv
-      python: "3.6"
-    - stage: test
-      script:
-          - pipenv run python test.py bwin -hd -vv
-      python: "3.6"
-    - stage: test
-      script:
-          - pipenv run python test.py 888sport -vv -hd -p $PROXY
-      python: "3.6"
-    - stage: test
-      script:
-          - pipenv run python test.py williamhill -vv -hd -p $PROXY
-      python: "3.6"
-
-    # python 3.7 test
-    - stage: test
-      script:
-          - pipenv run python test.py bet365 -hd -vv
-      python: "3.7"
-      dist: xenial
-      sudo: true
-
-    - stage: test
-      script:
-          - pipenv run python test.py bwin -hd -vv
-      python: "3.7"
-      dist: xenial
-      sudo: true
-
-    - stage: test
-      script:
-          - pipenv run python test.py 888sport -vv -hd -p $PROXY
-      python: "3.7"
-      dist: xenial
-      sudo: true
-
-    - stage: test
-      script:
-          - pipenv run python test.py williamhill -vv -hd -p $PROXY
-      python: "3.7"
-      dist: xenial
-      sudo: true
+  include:
+    - script: 
+      - pytest -m eight88sport --proxy $PROXY
+      - pytest -m bet365
+      - pytest -m bwin
+      - pytest -m williamhill --proxy $PROXY
+      - pytest --ignore=aao/test/spiders/bookmakers
+      - make coverage
