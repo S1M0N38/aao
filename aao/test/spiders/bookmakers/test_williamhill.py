@@ -15,7 +15,7 @@ COMPETITIONS = [
 
 class TestSpider():
 
-    @pytest.fixture(scope='module')
+    @pytest.fixture(scope='class')
     def spider(self, confspider):
         spider = SpiderWilliamhill(**confspider)
         spider.browser.get(spider.base_url)
@@ -41,7 +41,7 @@ class TestSoccer():
 
     competition = COMPETITIONS[1]
 
-    @pytest.fixture(scope='module')
+    @pytest.fixture(scope='class')
     def spider(self, confspider):
         spider = SpiderWilliamhill(**confspider)
         spider.soccer.country = self.competition[0]
