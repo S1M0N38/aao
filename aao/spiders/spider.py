@@ -35,6 +35,20 @@ class Spider(ABC):
         self.table = table(self.bookmaker)
         self.log.info('starting spider…')
 
+    @staticmethod
+    def odd2decimal(odd: str):
+        if '+' in odd:
+            return int(odd[1:]) / 100 + 1
+        elif '-' in odd:
+            return 100 / int(odd[1:]) + 1
+        elif '/' in odd:
+            numerator, denominator = odd.split('/')
+            return int(numerator) / int(denominator) + 1
+        elif '.' in odd or ',' in odd:
+            return float(odd)
+        else:
+            return None
+
     def quit(self):
         """Close the broswer session in a clean manner."""
         self.browser.quit()

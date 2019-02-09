@@ -22,6 +22,7 @@ class TestSpider():
         yield spider
         spider.quit()
 
+    @pytest.mark.skip('now performing odds type conversion')
     @pytest.mark.parametrize('format_', ['Fraction', 'Decimal', 'American'])
     def test_change_odds_format(self, spider, format_):
         spider._change_odds_format(format_)

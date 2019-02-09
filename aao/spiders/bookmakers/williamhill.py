@@ -16,19 +16,18 @@ class SpiderWilliamhill(Spider):
         super().__init__(*args, **kwargs)
         self._soccer = Soccer(self)
 
-    def _change_odds_format(self, format_):
-        assert format_ in {'Fraction', 'Decimal', 'American'}
-        self.log.debug(f'setting odds format to {format_} …')
-        locator = (By.XPATH, '//a[text() = "Odds Format "]')
-        dropdown = self.wait.until(EC.element_to_be_clickable(locator))
-        dropdown.click()
-        locator = (By.XPATH, '//a[text() = "Odds Format "]/../ul/li')
-        self.wait.until(EC.visibility_of_all_elements_located(locator))
-        xpath_format = (f'//li[@class="subheader__dropdown__item"]/a/'
-                        f'span[text() = "{format_}"]/..')
-        format_btn = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, xpath_format)))
-        format_btn.click()
+    # def _change_odds_format(self, format_):
+    #     assert format_ in {'Fraction', 'Decimal', 'American'}
+    #     self.log.debug(f'setting odds format to {format_} …')
+    #     locator = (By.XPATH, '//a[text() = "Odds Format "]')
+    #     dropdown = self.wait.until(EC.element_to_be_clickable(locator))
+    #     dropdown.click()
+    #     locator = (By.XPATH, '//a[text() = "Odds Format "]/../ul/li')
+    #     xpath_format = (f'//li[@class="subheader__dropdown__item"]/a/'
+    #                     f'span[text() = "{format_}"]/..')
+    #     format_btn = self.wait.until(
+    #         EC.element_to_be_clickable((By.XPATH, xpath_format)))
+    #     format_btn.click()
 
     @property
     def soccer(self):
@@ -44,7 +43,7 @@ class Soccer(sports.Soccer):
         self.log.debug(f'requesting page {self.country} - {self.league} …')
         url = f'{self.base_url}/football/competitions/{self._league}/matches'
         self.browser.get(url)
-        self._change_odds_format('Decimal')
+        # self._change_odds_format('Decimal')
         locator = (By.XPATH, '//div[@data-test-id="events-group"]')
         try:
             self.wait.until(EC.visibility_of_all_elements_located(locator))
@@ -110,16 +109,22 @@ class Soccer(sports.Soccer):
         return event
 
     def _parse_full_time_result(self, row):
-        return {'1': float(row[3]), 'X': float(row[4]), '2': float(row[5])}
+        return {'1': self.odd2decimal(row[3]),
+                'X': self.odd2decimal(row[4]),
+                '2': self.odd2decimal(row[5])}
 
     def _parse_under_over(self, row):
-        return {'under': float(row[4]), 'over': float(row[3])}
+        return {'under': self.odd2decimal(row[4]),
+                'over': self.odd2decimal(row[3])}
 
     def _parse_both_teams_to_score(self, row):
-        return {'yes': float(row[3]), 'no': float(row[4])}
+        return {'yes': self.odd2decimal(row[3]),
+                'no': self.odd2decimal(row[4])}
 
     def _parse_double_chance(self, row):
-        return {'1X': float(row[3]), 'X2': float(row[4]), '12': float(row[5])}
+        return {'1X': self.odd2decimal(row[3]),
+                'X2': self.odd2decimal(row[4]),
+                '12': self.odd2decimal(row[5])}
 
     def _events_full_time_result(self):
         events, full_time_result = [], []
