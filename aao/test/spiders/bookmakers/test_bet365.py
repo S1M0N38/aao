@@ -22,9 +22,9 @@ COMPETIONS = [
 class TestSpider():
 
     @pytest.fixture()
-    def spider(self):
+    def spider(self, confspider):
         spider = SpiderBet365.__new__(SpiderBet365)
-        super(SpiderBet365, spider).__init__()
+        super(SpiderBet365, spider).__init__(**confspider)
         yield spider
         spider.quit()
 
@@ -44,6 +44,8 @@ class TestSpider():
     def test_login_correct_credentials(self, spider):
         spider._homepage()
         spider._select_language()
+        if spider.base_url in spider.browser.current_url:
+            return
         spider._login(username, password)
         username_in_box = spider.browser.find_element_by_class_name(
             'hm-UserName_UserNameShown')
@@ -52,6 +54,8 @@ class TestSpider():
     def test_login_wrong_credentials(self, spider):
         spider._homepage()
         spider._select_language()
+        if spider.base_url in spider.browser.current_url:
+            return
         msg = 'The username password combination is wrong.'
         with pytest.raises(ValueError, match=msg):
             spider._login('foo_username', 'foo_password')
@@ -79,8 +83,9 @@ class TestSoccer():
     competition = COMPETIONS[1]
 
     @pytest.fixture(scope='module')
-    def spider(self):
-        spider = SpiderBet365(username=username, password=password)
+    def spider(self, confspider):
+        spider = SpiderBet365(
+            username=username, password=password, **confspider)
         spider.soccer.country = self.competition[0]
         spider.soccer._country = self.competition[1]
         spider.soccer.league = self.competition[2]
