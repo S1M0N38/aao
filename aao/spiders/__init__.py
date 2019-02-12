@@ -11,5 +11,9 @@ Spider888sport = importlib.import_module(
 SpiderWilliamhill = importlib.import_module(
     '.williamhill', package).SpiderWilliamhill
 
-spiders = [SpiderBet365, SpiderBwin,
-           Spider888sport, SpiderWilliamhill]
+spiders = {
+    'bet365': SpiderBet365,
+    'bwin': SpiderBwin,
+    '888sport': Spider888sport,
+    'williamhill': SpiderWilliamhill,
+}

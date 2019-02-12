@@ -8,7 +8,7 @@ from aao.spiders.spider import Spider
 
 class TestSpider:
 
-    @pytest.fixture(scope='class', params=spiders)
+    @pytest.fixture(scope='class', params=spiders.values())
     def spider(self, request):
         if request.param.bookmaker == 'bet365':
             username = os.environ['BET365_USERNAME']
