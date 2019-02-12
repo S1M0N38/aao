@@ -137,7 +137,7 @@ class TestSoccer():
     def test_get_rows(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
-        [print(r) for r in rows]
+        # [print(r) for r in rows]
         assert rows
 
     @pytest.mark.parser
@@ -169,7 +169,7 @@ class TestSoccer():
                'foo_home_team not in bookmaker teams table. '
                'Tables need an upgrade, notify the devs.')
         with pytest.raises(KeyError, match=msg):
-            home_team, away_team = spider.soccer._parse_teams(row)
+            spider.soccer._parse_teams(row)
 
     # markets
 
