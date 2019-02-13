@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class Driver(ABC):
 
     def __init__(self, headless=True, explicit_wait=5, implicit_wait=5,
-                 proxy=None, window_height=1080, window_width=1920):
+                 proxy=None, window_height=1080, window_width=1920, **kwargs):
 
         self.headless = headless
         self.explicit_wait = explicit_wait
