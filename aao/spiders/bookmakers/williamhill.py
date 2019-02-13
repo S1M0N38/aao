@@ -99,7 +99,7 @@ class Soccer(sports.Soccer):
         datetime = self._parse_datetime(row)
         home_team, away_team = self._parse_teams(row)
         event = {
-            'datatime': datetime,
+            'datetime': datetime,
             'country': self.country,
             'league': self.league,
             'home_team': home_team,
