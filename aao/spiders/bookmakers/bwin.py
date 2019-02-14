@@ -117,7 +117,7 @@ class Soccer(sports.Soccer):
                 row.pop(1)
             time_str = ' '.join(row[1].split(' ')[-2:])
             time = datetime.datetime.strptime(time_str, '%I:%M %p').time()
-        return str(datetime.datetime.combine(date, time))
+        return datetime.datetime.combine(date, time)
 
     def _parse_teams(self, row):
         teams, msg = [], ''
@@ -243,12 +243,12 @@ class Soccer(sports.Soccer):
             self._events, *self._market(
                 rows_dict['double_chance'], '_parse_double_chance'))
         for i in range(len(self._events)):
-            self._odds.append([
-                {'full_time_result': full_time_result[i]},
-                {'under_over': under_over[i]},
-                {'draw_no_bet': draw_no_bet[i]},
-                {'both_teams_to_score': both_teams_to_score[i]},
-                {'double_chance': double_chance[i]},
-            ])
+            self._odds.append({
+                'full_time_result': full_time_result[i],
+                'under_over': under_over[i],
+                'draw_no_bet': draw_no_bet[i],
+                'both_teams_to_score': both_teams_to_score[i],
+                'double_chance': double_chance[i],
+            })
         return self._events, self._odds
 

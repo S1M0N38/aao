@@ -220,12 +220,12 @@ class Soccer(sports.Soccer):
         double_chance = self._sort_odds(
             self._events, *self._double_chance())
         for i in range(len(self._events)):
-            self._odds.append([
-                {'full_time_result': full_time_result[i]},
-                {'under_over': under_over[i]},
-                {'draw_no_bet': draw_no_bet[i]},
-                {'both_teams_to_score': both_teams_to_score[i]},
-                {'double_chance': double_chance[i]},
-            ])
+            self._odds.append({
+                'full_time_result': full_time_result[i],
+                'under_over': under_over[i],
+                'draw_no_bet': draw_no_bet[i],
+                'both_teams_to_score': both_teams_to_score[i],
+                'double_chance': double_chance[i],
+            })
         return self._events, self._odds
 
