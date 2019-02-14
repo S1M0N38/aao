@@ -112,7 +112,7 @@ class TestSoccer():
                'foo_home_team not in bookmaker teams table. '
                'Tables need an upgrade, notify the devs.')
         with pytest.raises(KeyError, match=msg):
-            home_team, away_team = spider.soccer._parse_teams(row)
+            spider.soccer._parse_teams(row)
 
     # markets
 

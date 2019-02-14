@@ -62,8 +62,8 @@ class TestSoccer():
             spider.soccer._country = 'foo_country'
             spider.soccer._league = 'foo_league'
             spider.soccer._request_page()
-            header = spider.browser.find_element_by_class_name('header-title')
-            assert header.text == 'Competitions'
+        header = spider.browser.find_element_by_class_name('header-title')
+        assert header.text == 'Competitions'
         spider.soccer._country = self.competition[1]
         spider.soccer._league = self.competition[3]
 
@@ -77,7 +77,7 @@ class TestSoccer():
     def test_get_rows(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
-        [print(r) for r in rows]
+        # [print(r) for r in rows]
         assert rows
 
     # parse
@@ -108,7 +108,7 @@ class TestSoccer():
                'foo_home_team not in bookmaker teams table. '
                'Tables need an upgrade, notify the devs.')
         with pytest.raises(KeyError, match=msg):
-            home_team, away_team = spider.soccer._parse_teams(row)
+            spider.soccer._parse_teams(row)
 
     # markets
 
