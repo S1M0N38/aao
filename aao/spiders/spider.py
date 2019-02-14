@@ -38,14 +38,14 @@ class Spider(ABC):
     @staticmethod
     def odd2decimal(odd: str):
         if '+' in odd:
-            return int(odd[1:]) / 100 + 1
+            return round(int(odd[1:]) / 100 + 1, 2)
         elif '-' in odd:
-            return 100 / int(odd[1:]) + 1
+            return round(100 / int(odd[1:]) + 1, 2)
         elif '/' in odd:
             numerator, denominator = odd.split('/')
-            return int(numerator) / int(denominator) + 1
+            return round(int(numerator) / int(denominator) + 1, 2)
         elif '.' in odd or ',' in odd:
-            return float(odd)
+            return round(float(odd), 2)
         else:
             return None
 
