@@ -35,7 +35,7 @@ class Soccer(sports.Soccer):
             url = (f'{self.base_url}categoryIds=25,359,31,190,261&')
         url += f'leagueIds={self._league}&page={page}&sportId=4'
         self.browser.get(url)
-        locator = (By.XPATH, '//div[@id="bet-offer"]//td')
+        locator = (By.XPATH, '//div[@id="markets-container"]//td')
         try:
             self.wait.until(EC.visibility_of_all_elements_located(locator))
         except TimeoutException:
