@@ -15,7 +15,7 @@ class Soccer(ABC, Sport):
         super().__init__(spider)
 
     @abstractmethod
-    def _events_odds(self):
+    def _events_odds(self, events_only):
         pass
 
     def countries(self, full=False):
@@ -25,20 +25,39 @@ class Soccer(ABC, Sport):
         return list(countries)
 
     def leagues(self, country, full=False):
-        leagues = self.countries(full=True)[country]['leagues']
+        try:
+            leagues = self.countries(full=True)[country]['leagues']
+        except KeyError:
+            raise KeyError(
+                f'{country} is not supported by this spider. '
+                f'Take a look at the docs for a list of supported countries')
         if full:
             return leagues
         return list(leagues)
 
     def teams(self, country, league, full=False):
-        teams = self.leagues(country, full=True)[league]['teams']
+        try:
+            teams = self.leagues(country, full=True)[league]['teams']
+        except KeyError:
+            raise KeyError(
+                f'{league} is not supported by this spider. '
+                f'Take a look at the docs for a list of supported leagues')
         if full:
             return teams
         return list(teams.values())
 
+    def _setattr_competiton(self, country, league):
+        _country = self.soccer.countries(full=True)[country]['name']
+        _league = self.soccer.leagues(country, full=True)[league]['name']
+        self.soccer._country, self.soccer._league = _country, _league
+        self.soccer.country, self.soccer.league = country, league
+
     def events(self, country, league):
-        pass
+        self._setattr_competiton(country, league)
+        events = self.soccer._events_odds(events_only=True)
+        return events
 
     def odds(self, country, league):
-        pass
-
+        self._setattr_competiton(country, league)
+        events, odds = self.soccer._events_odds()
+        return events, odds
