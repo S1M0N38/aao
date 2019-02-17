@@ -166,7 +166,7 @@ class Soccer(sports.Soccer):
                     break
                 row.append(value)
             # exclude dumbs rows and live matches
-            if row and len(row[0].split('\n')) == 2:
+            if row and len(row[0].split('\n')) == 2 and (':' in row[0]):
                 rows.append([date] + row[0].split('\n') + row[1:])
         return rows
 
