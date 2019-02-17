@@ -3,7 +3,6 @@ import os
 import pytest
 
 from aao.spiders import spiders
-from aao.spiders.spider import Spider
 
 
 class TestSpider:
