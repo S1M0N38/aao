@@ -1,4 +1,5 @@
 from abc import ABC
+import os
 
 from .drivers import ChromeDriver
 from .logger import logger
@@ -19,8 +20,7 @@ class Spider(ABC):
 
     """
 
-    def __init__(self, driver=ChromeDriver,
-                 username=None, password=None, **kwargs):
+    def __init__(self, driver=ChromeDriver, **kwargs):
         """Init the spider, open the browser and start the log
 
         Args:
@@ -34,6 +34,21 @@ class Spider(ABC):
         self.log = logger(self.bookmaker, **kwargs)
         self.table = table(self.bookmaker)
         self.log.info('starting spider…')
+
+    def _load_env_config(self, kwargs):
+        envs = ['username', 'password', 'proxy']
+        for env in envs:
+            if env not in kwargs:
+                value = os.getenv(f'{self.bookmaker.upper()}_{env.upper()}')
+                if value:
+                    if value.upper() == 'TRUE':
+                        value = True
+                    if value.upper() == 'FALSE':
+                        value = False
+                    if value.upper() == 'NONE' or value.upper() == 'NULL':
+                        continue
+                    kwargs[env] = value
+        return kwargs
 
     @staticmethod
     def odd2decimal(odd: str):
