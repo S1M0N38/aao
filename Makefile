@@ -3,8 +3,8 @@ pipenv:
 	pipenv install --dev
 
 chromedriver:
-	wget -N https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip -P ~/
-	unzip ~/chromedriver_linux64.zip -d ~/
+	wget -q -N https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip -P ~/
+	unzip -q ~/chromedriver_linux64.zip -d ~/
 	rm ~/chromedriver_linux64.zip
 	sudo mv -f ~/chromedriver /usr/local/share/
 	sudo chmod +x /usr/local/share/chromedriver
@@ -23,9 +23,3 @@ coverage:
 
 lint:
 	pipenv run flake8 --ignore=E501,W391
-
-dist:
-	pipenv install twine
-	python setup.py sdist bdist_wheel
-	twine upload dist/*
-	rm -fr build dist .egg requests.egg-info
