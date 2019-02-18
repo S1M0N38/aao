@@ -14,13 +14,16 @@ class SpiderBet365(Spider):
     bookmaker = 'bet365'
     base_url = 'https://www.bet365.com/'
 
-    def __init__(self, username=None, password=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        kwargs = self._load_env_config(kwargs)
         super().__init__(*args, **kwargs)
         self._homepage()
         self._select_language()
         # if browser is in en version of the site, is no longer necessary to
         # login. If you try login in this situation, an error will be raise
         if self.base_url not in self.browser.current_url:
+            username = kwargs.get('username')
+            password = kwargs.get('password')
             self._login(username, password)
         # self._change_odds_format('Decimal')
         self._soccer = Soccer(self)

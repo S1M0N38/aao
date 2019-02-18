@@ -13,6 +13,7 @@ class Spider888sport(Spider):
     base_url = 'https://www.888sport.com/'
 
     def __init__(self, *args, **kwargs):
+        kwargs = self._load_env_config(kwargs)
         super().__init__(*args, **kwargs)
         self._soccer = Soccer(self)
 

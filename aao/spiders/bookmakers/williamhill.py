@@ -13,6 +13,7 @@ class SpiderWilliamhill(Spider):
     base_url = 'http://sports.williamhill.com/betting/en-gb'
 
     def __init__(self, *args, **kwargs):
+        kwargs = self._load_env_config(kwargs)
         super().__init__(*args, **kwargs)
         self._soccer = Soccer(self)
 
