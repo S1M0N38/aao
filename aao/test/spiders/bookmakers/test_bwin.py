@@ -25,8 +25,8 @@ class TestSoccer():
     competition = COMPETITIONS[0]
 
     @pytest.fixture(scope='module')
-    def spider(self, confspider):
-        spider = SpiderBwin(**confspider)
+    def spider(self):
+        spider = SpiderBwin()
         spider.soccer.country = self.competition[0]
         spider.soccer._country = self.competition[1]
         spider.soccer.league = self.competition[2]

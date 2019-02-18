@@ -16,8 +16,8 @@ COMPETITIONS = [
 class TestSpider():
 
     @pytest.fixture(scope='class')
-    def spider(self, confspider):
-        spider = SpiderWilliamhill(**confspider)
+    def spider(self):
+        spider = SpiderWilliamhill()
         spider.browser.get(spider.base_url)
         yield spider
         spider.quit()
@@ -43,8 +43,8 @@ class TestSoccer():
     competition = COMPETITIONS[1]
 
     @pytest.fixture(scope='class')
-    def spider(self, confspider):
-        spider = SpiderWilliamhill(**confspider)
+    def spider(self):
+        spider = SpiderWilliamhill()
         spider.soccer.country = self.competition[0]
         spider.soccer._country = self.competition[1]
         spider.soccer.league = self.competition[2]

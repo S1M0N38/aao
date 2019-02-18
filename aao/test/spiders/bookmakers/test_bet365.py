@@ -22,9 +22,9 @@ COMPETIONS = [
 class TestSpider():
 
     @pytest.fixture()
-    def spider(self, confspider):
+    def spider(self):
         spider = SpiderBet365.__new__(SpiderBet365)
-        super(SpiderBet365, spider).__init__(**confspider)
+        super(SpiderBet365, spider).__init__()
         yield spider
         spider.quit()
 
@@ -83,8 +83,8 @@ class TestSoccer():
     competition = COMPETIONS[1]
 
     @pytest.fixture(scope='module')
-    def spider(self, confspider):
-        spider = SpiderBet365(**confspider)
+    def spider(self):
+        spider = SpiderBet365()
         spider.soccer.country = self.competition[0]
         spider.soccer._country = self.competition[1]
         spider.soccer.league = self.competition[2]
