@@ -17,19 +17,6 @@ class SpiderWilliamhill(Spider):
         super().__init__(*args, **kwargs)
         self._soccer = Soccer(self)
 
-    # def _change_odds_format(self, format_):
-    #     assert format_ in {'Fraction', 'Decimal', 'American'}
-    #     self.log.debug(f'setting odds format to {format_} …')
-    #     locator = (By.XPATH, '//a[text() = "Odds Format "]')
-    #     dropdown = self.wait.until(EC.element_to_be_clickable(locator))
-    #     dropdown.click()
-    #     locator = (By.XPATH, '//a[text() = "Odds Format "]/../ul/li')
-    #     xpath_format = (f'//li[@class="subheader__dropdown__item"]/a/'
-    #                     f'span[text() = "{format_}"]/..')
-    #     format_btn = self.wait.until(
-    #         EC.element_to_be_clickable((By.XPATH, xpath_format)))
-    #     format_btn.click()
-
     @property
     def soccer(self):
         return self._soccer
@@ -44,7 +31,6 @@ class Soccer(sports.Soccer):
         self.log.debug(f'requesting page {self.country} - {self.league} …')
         url = f'{self.base_url}/football/competitions/{self._league}/matches'
         self.browser.get(url)
-        # self._change_odds_format('Decimal')
         locator = (By.XPATH, '//div[@data-test-id="events-group"]')
         try:
             self.wait.until(EC.visibility_of_all_elements_located(locator))
@@ -105,8 +91,6 @@ class Soccer(sports.Soccer):
             'league': self.league,
             'home_team': home_team,
             'away_team': away_team,
-            # 'home_goal': 0,
-            # 'away_goal': 0,
         }
         return event
 
@@ -193,4 +177,3 @@ class Soccer(sports.Soccer):
                 'double_chance': double_chance[i],
             })
         return self._events, self._odds
-

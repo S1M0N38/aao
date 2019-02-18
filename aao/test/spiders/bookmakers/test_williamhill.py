@@ -15,25 +15,6 @@ COMPETITIONS = [
 
 class TestSpider():
 
-    @pytest.fixture(scope='class')
-    def spider(self):
-        spider = SpiderWilliamhill()
-        spider.browser.get(spider.base_url)
-        yield spider
-        spider.quit()
-
-    @pytest.mark.skip('now performing odds type conversion')
-    @pytest.mark.parametrize('format_', ['Fraction', 'Decimal', 'American'])
-    def test_change_odds_format(self, spider, format_):
-        spider._change_odds_format(format_)
-        odd = spider.browser.find_element_by_class_name('betbutton__odds')
-        if format_ == 'Fraction':
-            assert '/' in odd.text
-        elif format_ == 'Decimal':
-            assert '.' in odd.text
-        else:
-            assert '+' in odd.text or '-' in odd.text
-
     def test_soccer(self):
         pass
 
@@ -77,7 +58,6 @@ class TestSoccer():
     def test_get_rows(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
-        # [print(r) for r in rows]
         assert rows
 
     # parse
@@ -127,12 +107,7 @@ class TestSoccer():
         events, odds = spider.soccer._events_odds()
         assert events
         assert odds
-        # for e, o in zip(events, odds):
-        #     print(e)
-        #     print(o)
-        #     print()
 
     def test_events_odds_events_only(self, spider):
         events = spider.soccer._events_odds(events_only=True)
         assert events
-
