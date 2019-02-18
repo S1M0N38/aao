@@ -1,5 +1,5 @@
 pipenv:
-	pip install pipenv --upgrade
+	pip install pipenv --upgrade -q
 	pipenv install --dev
 
 chromedriver:
