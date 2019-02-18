@@ -25,7 +25,6 @@ class SpiderBet365(Spider):
             username = kwargs.get('username')
             password = kwargs.get('password')
             self._login(username, password)
-        # self._change_odds_format('Decimal')
         self._soccer = Soccer(self)
 
     def _homepage(self):
@@ -39,27 +38,6 @@ class SpiderBet365(Spider):
         lang_btn = self.wait.until(
             EC.element_to_be_clickable((By.XPATH, lang)))
         lang_btn.click()
-        #   if 'cb' not in self.browser.current_url:
-        #    self.wait.until(
-        #        EC.invisibility_of_element_located((By.ID, 'dBlur')))
-        #    lang_btn = self.wait.until(
-        #        EC.element_to_be_clickable((By.XPATH, lang)))
-        #    lang_btn.click()
-
-    # Not really usefull because in account options you can specify
-    # the defaut odds format
-    def _change_odds_format(self, format_):
-        self.log.debug('setting odds format to decimal …')
-        # three formats possible: Fractional, Decimal, American. The format
-        # had to be switch to 'Decimal' due to the future type conversion
-        dropdown = ('//div[@class="hm-OddsDropDownSelections '
-                    'hm-DropDownSelections "]')
-        type_ = (f'//div[@class="hm-DropDownSelections_ContainerInner "]'
-                 f'/a[text() = "{format_}"]')
-        drop_btn = self.wait.until(
-            EC.element_to_be_clickable((By.XPATH, dropdown)))
-        drop_btn.click()
-        self.browser.find_element_by_xpath(type_).click()
 
     def _login(self, username, password):
         self.log.debug(f'trying to log using {username} …')
@@ -201,25 +179,30 @@ class Soccer(sports.Soccer):
             'league': self.league,
             'home_team': home_team,
             'away_team': away_team,
-            # 'home_goal': 0,
-            # 'away_goal': 0,
         }
         return event
 
     def _parse_full_time_result(self, row):
-        return {'1': float(row[3]), 'X': float(row[4]), '2': float(row[5])}
+        return {'1': self.odd2decimal(row[3]),
+                'X': self.odd2decimal(row[4]),
+                '2': self.odd2decimal(row[5])}
 
     def _parse_under_over(self, row):
-        return {'under': float(row[4]), 'over': float(row[3])}
+        return {'under': self.odd2decimal(row[4]),
+                'over': self.odd2decimal(row[3])}
 
     def _parse_draw_no_bet(self, row):
-        return {'1': float(row[3]), '2': float(row[4])}
+        return {'1': self.odd2decimal(row[3]),
+                '2': self.odd2decimal(row[4])}
 
     def _parse_both_teams_to_score(self, row):
-        return {'yes': float(row[3]), 'no': float(row[4])}
+        return {'yes': self.odd2decimal(row[3]),
+                'no': self.odd2decimal(row[4])}
 
     def _parse_double_chance(self, row):
-        return {'1X': float(row[3]), 'X2': float(row[4]), '12': float(row[5])}
+        return {'1X': self.odd2decimal(row[3]),
+                'X2': self.odd2decimal(row[4]),
+                '12': self.odd2decimal(row[5])}
 
     def _events_full_time_result(self):
         events, full_time_result = [], []
@@ -297,4 +280,3 @@ class Soccer(sports.Soccer):
                 'double_chance': double_chance[i],
             })
         return self._events, self._odds
-

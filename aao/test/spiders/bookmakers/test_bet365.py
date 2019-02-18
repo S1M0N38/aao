@@ -60,15 +60,6 @@ class TestSpider():
         with pytest.raises(ValueError, match=msg):
             spider._login('foo_username', 'foo_password')
 
-    @pytest.mark.skip
-    def test_change_odds_format(self, spider):
-        spider._homepage()
-        spider._select_language()
-        if spider.base_url not in spider.browser.current_url:
-            spider._login(username, password)
-        spider._change_odds_format('American')
-        spider._change_odds_format('Decimal')
-
     def test_soccer(self):
         spider = SpiderBet365(username=username, password=password)
         spider.soccer
@@ -136,7 +127,6 @@ class TestSoccer():
     def test_get_rows(self, spider):
         spider.soccer._request_page()
         rows = spider.soccer._get_rows()
-        # [print(r) for r in rows]
         assert rows
 
     @pytest.mark.parser
@@ -188,13 +178,8 @@ class TestSoccer():
         events, odds = spider.soccer._events_odds()
         assert events
         assert odds
-#        for e, o in zip(events, odds):
-#            print(e)
-#            print(o)
-#            print()
 
     @pytest.mark.action
     def test_events_odds_events_only(self, spider):
         events = spider.soccer._events_odds(events_only=True)
         assert events
-
