@@ -15,15 +15,7 @@ class TestSoccer():
 
     @pytest.fixture(scope='class', params=spiders.values())
     def spider(self, request):
-        if request.param.bookmaker == 'bet365':
-            username = os.environ['BET365_USERNAME']
-            password = os.environ['BET365_PASSWORD']
-            s = request.param(username=username, password=password)
-        elif request.param.bookmaker == '888sport':
-            proxy = os.environ['PROXY']
-            s = request.param(proxy=proxy)
-        else:
-            s = request.param()
+        s = request.param()
         yield s
         s.quit()
 

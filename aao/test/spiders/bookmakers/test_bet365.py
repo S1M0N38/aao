@@ -84,8 +84,7 @@ class TestSoccer():
 
     @pytest.fixture(scope='module')
     def spider(self, confspider):
-        spider = SpiderBet365(
-            username=username, password=password, **confspider)
+        spider = SpiderBet365(**confspider)
         spider.soccer.country = self.competition[0]
         spider.soccer._country = self.competition[1]
         spider.soccer.league = self.competition[2]
