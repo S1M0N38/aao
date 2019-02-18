@@ -11,11 +11,12 @@ chromedriver:
 	sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
 
 test:
-	pytest -m eight88sport --proxy ${PROXY}
+	pytest -m eight88sport
 	pytest -m bet365
 	pytest -m bwin
 	pytest -m williamhill
-	pytest --ignore=aao/test/spiders/bookmakers
+	pytest -m sports
+	pytest --ignore=aao/test/spiders/bookmakers --ignore=aao/test/spiders/test_sports.py
 
 coverage:
 	pipenv run python-codacy-coverage -r coverage.xml

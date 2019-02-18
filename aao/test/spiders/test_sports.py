@@ -1,8 +1,9 @@
-import os
-
 import pytest
 
 from aao.spiders import spiders
+
+
+pytestmark = pytest.mark.sports
 
 
 class TestSport():
