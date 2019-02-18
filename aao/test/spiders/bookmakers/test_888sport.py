@@ -131,10 +131,6 @@ class TestSoccer():
         events, odds = spider.soccer._events_odds()
         assert events
         assert odds
-#        for e, o in zip(events, odds):
-#            print(e)
-#            print(o)
-#            print()
 
     def test_events_odds_events_only(self, spider):
         events = spider.soccer._events_odds(events_only=True)

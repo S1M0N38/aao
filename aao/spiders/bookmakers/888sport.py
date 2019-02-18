@@ -111,24 +111,22 @@ class Soccer(sports.Soccer):
             'league': self.league,
             'home_team': home_team,
             'away_team': away_team,
-            # 'home_goal': 0,
-            # 'away_goal': 0,
         }
         return event
 
     def _parse_full_time_result(self, row):
         i = row.index('Draw')
-        _1 = float(row[i - 1])
-        _X = float(row[i + 1])
-        _2 = float(row[i + 3])
+        _1 = self.odd2decimal(row[i - 1])
+        _X = self.odd2decimal(row[i + 1])
+        _2 = self.odd2decimal(row[i + 3])
         return {'1': _1, 'X': _X, '2': _2}
 
     def _parse_under_over(self, row):
         i = row.index('Under')
         if row[i + 1] != '2.5' or row[i - 2] != '2.5':
             return None
-        under = float(row[i + 2])
-        over = float(row[i - 1])
+        under = self.odd2decimal(row[i + 2])
+        over = self.odd2decimal(row[i - 1])
         return {'under': under, 'over': over}
 
     def _parse_draw_no_bet(self, row):
@@ -136,8 +134,8 @@ class Soccer(sports.Soccer):
         try:
             row = row[4:]
             i = row.index(home_team)
-            _1 = float(row[i + 1])
-            _2 = float(row[i + 3])
+            _1 = self.odd2decimal(row[i + 1])
+            _2 = self.odd2decimal(row[i + 3])
             return {'1': _1, '2': _2}
         except (ValueError, IndexError):
             return None
@@ -145,8 +143,8 @@ class Soccer(sports.Soccer):
     def _parse_both_teams_to_score(self, row):
         try:
             i = row.index('No')
-            yes = float(row[i - 1])
-            no = float(row[i + 1])
+            yes = self.odd2decimal(row[i - 1])
+            no = self.odd2decimal(row[i + 1])
             return {'yes': yes, 'no': no}
         except (ValueError, IndexError):
             return None
@@ -154,9 +152,9 @@ class Soccer(sports.Soccer):
     def _parse_double_chance(self, row):
         try:
             i = row.index('1X')
-            _1X = float(row[i + 1])
-            _X2 = float(row[i + 5])
-            _12 = float(row[i + 3])
+            _1X = self.odd2decimal(row[i + 1])
+            _X2 = self.odd2decimal(row[i + 5])
+            _12 = self.odd2decimal(row[i + 3])
             return {'1X': _1X, 'X2': _X2, '12': _12}
         except (ValueError, IndexError):
             return None
@@ -229,4 +227,3 @@ class Soccer(sports.Soccer):
                 'double_chance': double_chance[i],
             })
         return self._events, self._odds
-
