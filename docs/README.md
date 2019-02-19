@@ -37,7 +37,7 @@ pipenv update aao
 If you plan to use the **manual scraping** you need also to install 
 [chromedrivers](http://chromedriver.chromium.org/) (and of course you have to 
 have chorome or chromiunm installed). If have ubuntu take a took at the 
-[Makefile]('https://github.com/S1M0N38/aao/blob/master/Makefile') and try 
+[Makefile](https://github.com/S1M0N38/aao/blob/master/Makefile) and try 
 the commands under *chromedriver* section. 
 For all other os google how to install chromedriver.
 
