@@ -36,6 +36,7 @@ def gen_doc_soccer():
     doc = '# Soccer\n'
     doc += gen_table_soccer('england', 'gb-eng')
     doc += gen_table_soccer('italy', 'it')
+    doc += gen_table_soccer('spain', 'es')
     return doc
 
 ##############################################################################
