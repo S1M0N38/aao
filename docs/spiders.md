@@ -58,7 +58,7 @@ events, odds = spider.soccer.odds('italy', 'serie_a')
 ```
 **.soccer.odds()** function accepts to arguments: **country** and **leagues**.
 Bookmakers support different leagues but major leagues are avaiable on every
-bookmaker. Take a look at the *sports/soccer* for a list of supported leagues.
+bookmaker. Take a look at the [sports/soccer](soccer.md) for a list of supported leagues.
 
 ### OtherSport
 !> soccer is the only supported sport
