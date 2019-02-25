@@ -6,8 +6,10 @@
 
 Aganistallodds (*aao*) project aim to offert an environment where everyone 
 can test his betting strategy on real odds.
-You can get the odds in two way: through **manual scraping** or using the **api**.
+You can get the odds in two way: through **manual scraping**
+(aao + [aao-script](https://github.com/S1M0N38/aao-script) = 🚀)
+or using the **api** (not ready yet ☹️).
+
 
 ## Docs
-
 [Documentation](https://s1m0n38.github.io/aao/)
