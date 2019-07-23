@@ -152,9 +152,14 @@ class Soccer(sports.Soccer):
     def _sort_odds(events, odds_events, odds):
         # match odds to its relative events.
         # Useful if rows are mixed between markets
-        keys = [odds_events.index(e) for e in events]
-        odds = [odds[k] for k in keys]
-        return odds
+        # (this way also handle when events > odds_events)
+        sort_odds = []
+        for e in events:
+            if e in odds_events:
+                sort_odds.append(odds[odds_events.index(e)])
+            else:
+                sort_odds.append(None)
+        return sort_odds
 
     def _events_odds(self, events_only=False):
         self._odds = []
