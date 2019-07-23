@@ -122,7 +122,10 @@ class Soccer(sports.Soccer):
         return {'1': _1, 'X': _X, '2': _2}
 
     def _parse_under_over(self, row):
-        i = row.index('Under')
+        try:
+            i = row.index('Under')
+        except ValueError:
+            return None
         if row[i + 1] != '2.5' or row[i - 2] != '2.5':
             return None
         under = self.odd2decimal(row[i + 2])
