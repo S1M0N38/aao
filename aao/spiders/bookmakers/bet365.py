@@ -60,7 +60,7 @@ class SpiderBet365(Spider):
         except TimeoutException:
             raise ValueError('The username password combination is wrong.')
         self.log.debug('closing the confermation-identity pop up …')
-        pop_up = 'wl-UserNotificationsPopup_Frame'
+        pop_up = 'lp-UserNotificationsPopup_Frame'
         self.wait.until(
             EC.presence_of_element_located((By.CLASS_NAME, pop_up)))
         self.browser.switch_to.frame('messageWindow')
@@ -124,16 +124,16 @@ class Soccer(sports.Soccer):
         market_btn = self.wait.until(EC.element_to_be_clickable(
             (By.CLASS_NAME, 'cm-CouponMarketGroup_ChangeMarket')))
         market_btn.click()
-        xpath = f'//div[@class="wl-DropDown_Inner "]//div[text()="{market}"]'
+        xpath = f'//div[@class="lul-DropDown_Inner "]//div[text()="{market}"]'
         market = self.wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
         market.click()
 
     def _get_rows(self):
         days = {'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'}
-        xpath_cols = ('//div[@class="gl-MarketGroupContainer '
-                      'gl-MarketGroupContainer_HasLabels "]/div')
+        xpath_cols = ('//div[@class="gll-MarketGroupContainer '
+                      'gll-MarketGroupContainer_HasLabels "]/div')
         xpath_rows = ('//div[@class="sl-MarketCouponFixtureLabelBase '
-                      'gl-Market_General gl-Market_HasLabels "]/div')
+                      'gll-Market_General gll-Market_HasLabels "]/div')
         cols_len = len(self.browser.find_elements_by_xpath(xpath_cols))
         rows_len = len(self.browser.find_elements_by_xpath(xpath_rows))
         rows = []
