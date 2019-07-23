@@ -21,7 +21,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETITIONS[1]
+    competition = COMPETITIONS[0]
 
     @pytest.fixture(scope='class')
     def spider(self):

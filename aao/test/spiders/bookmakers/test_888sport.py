@@ -26,7 +26,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETITIONS[2]
+    competition = COMPETITIONS[0]
 
     @pytest.fixture(scope='module')
     def spider(self):
@@ -129,6 +129,7 @@ class TestSoccer():
 
     def test_events_odds(self, spider):
         events, odds = spider.soccer._events_odds()
+        [print(e, '\n', o, '\n') for e, o in zip(events, odds)]
         assert events
         assert odds
 

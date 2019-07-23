@@ -64,14 +64,14 @@ class TestSpider():
         spider = SpiderBet365(username=username, password=password)
         spider.soccer
         sport = spider.browser.find_element_by_class_name(
-            'wl-ClassificationHeader_ClassificationName').text
+            'sl-ClassificationHeader_ClassificationName').text
         assert sport == 'Soccer'
         spider.quit()
 
 
 class TestSoccer():
 
-    competition = COMPETIONS[1]
+    competition = COMPETIONS[0]
 
     @pytest.fixture(scope='module')
     def spider(self):
