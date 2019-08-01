@@ -131,7 +131,7 @@
       "name": "france",
       "leagues": {
         "ligue_1": {
-          "name": "ligue_1",
+          "name": "French-Ligue-1",
           "teams": {
             "Paris Saint-Germain": "PSG",
             "Lyon": "Lyon",
@@ -156,7 +156,7 @@
           }
         },
         "ligue_2": {
-          "name": "ligue_2",
+          "name": "French-Ligue-2",
           "teams": {
             "Auxerre": "Auxerre",
             "Le Mans": "Le Mans",
