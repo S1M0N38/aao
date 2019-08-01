@@ -126,6 +126,61 @@
           "teams": null
         }
       }
+    },
+    "france": {
+      "name": "france",
+      "leagues": {
+        "ligue_1": {
+          "name": "ligue_1",
+          "teams": {
+            "Paris Saint-Germain": "PSG",
+            "Lyon": "Lyon",
+            "Marseille": "Marseille",
+            "Lille": "Lille",
+            "Monaco": "Monaco",
+            "Nice": "Nice",
+            "St. Etienne": "Saint-Etienne",
+            "Rennes": "Rennes",
+            "Bordeaux": "Bordeaux",
+            "Montpellier": "Montpellier",
+            "Nantes": "Nantes",
+            "Reims": "Reims",
+            "Strasbourg": "Strasbourg",
+            "Nimes": "Nimes Olympique",
+            "Metz": "Metz",
+            "Angers": "Angers",
+            "Toulouse": "Toulouse",
+            "Brest": "Brest",
+            "Amiens": "Amiens",
+            "Dijon": "Dijon"
+          }
+        },
+        "ligue_2": {
+          "name": "ligue_2",
+          "teams": {
+            "Auxerre": "Auxerre",
+            "Le Mans": "Le Mans",
+            "Chateauroux": "Chateauroux",
+            "Rodez": "Rodez",
+            "Grenoble": "Grenoble",
+            "AC Ajaccio": "AC Ajaccio",
+            "Le Havre": "Le Havre",
+            "Niort": "Niort",
+            "Orleans": "Orleans",
+            "Chambly": "Chambly FC",
+            "Paris FC": "Paris FC",
+            "Sochaux": "Sochaux",
+            "Troyes": "Troyes",
+            "Clermont": "Clermont",
+            "Valenciennes": "Valenciennes",
+            "Nancy": "Nancy",
+            "Lens": "RC Lens",
+            "Guingamp": "Guingamp",
+            "Caen": "Caen",
+            "Lorient": "Lorient"
+          }
+        }
+      }
     }
   }
 }

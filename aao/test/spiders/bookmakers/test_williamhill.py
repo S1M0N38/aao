@@ -8,8 +8,11 @@ pytestmark = pytest.mark.williamhill
 COMPETITIONS = [
     # country, _country, league, _league, page_name
     ['england', 'england', 'premier_league', 'English-Premier-League', 'English Premier League'],
+    ['england', 'england', 'efl_championship', 'English-Championship', 'English Championship'],
     ['italy', 'italy', 'serie_a', 'Italian-Serie-A', 'Italian Serie A'],
     ['spain', 'spain', 'la_liga', 'Spanish-La-Liga-Primera', 'Spanish La Liga Primera'],
+    ['france', 'france', 'ligue_1', 'French-Ligue-1', 'French Ligue 1'],
+    ['france', 'france', 'ligue_2', 'French-Ligue-2', 'French Ligue 2'],
 ]
 
 
@@ -21,7 +24,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETITIONS[0]
+    competition = COMPETITIONS[5]
 
     @pytest.fixture(scope='class')
     def spider(self):
