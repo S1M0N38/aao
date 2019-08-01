@@ -124,8 +124,11 @@ class Soccer(sports.Soccer):
         teams, msg = [], ''
         try:  # full_time result format
             datetime.datetime.strptime(row[1], '%I:%M %p')
-            index = row.index('X')
-            teams_list = row[index - 2::4]
+            if 'X' in row:
+                index = row.index('X')
+                teams_list = row[index - 2::4]
+            else:
+                teams_list = [row[2], row[4]]
         except ValueError:
             if '+' in row[1]:
                 row.pop(1)
