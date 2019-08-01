@@ -56,14 +56,14 @@ following variables
 PROXY="http://123.123.123:123"
 
 # BET365
-USERNAME_BET365="username_bet365"
-PASSWORD_BET365="password_bet365"
+BET365_USERNAME="username_bet365"
+BET365_PASSWORD="password_bet365"
 
 # 888SPORT
-PROXY_BET365="http://123.123.123:123"
+888SPORT_PROXY="http://123.123.123:123"
 
 ...
-{VALUE}_{BOOKMAKER}="value"
+{BOOKMAKER}_{VALUE}_="value"
 ```
 
 With the *.env* file you can specify `**kargs` passed to the spider. 
