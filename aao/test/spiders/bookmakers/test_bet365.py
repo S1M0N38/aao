@@ -7,8 +7,8 @@ from aao.spiders import SpiderBet365
 
 pytestmark = pytest.mark.bet365
 
-username = os.environ['USERNAME_BET365']
-password = os.environ['PASSWORD_BET365']
+username = os.environ['BET365_USERNAME']
+password = os.environ['BET365_PASSWORD']
 
 COMPETIONS = [
     # country, _country, league, _league, page_name

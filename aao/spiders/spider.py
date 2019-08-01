@@ -39,7 +39,7 @@ class Spider(ABC):
         envs = ['username', 'password', 'proxy']
         for env in envs:
             if env not in kwargs:
-                value = os.getenv(f'{env.upper()}_{self.bookmaker.upper()}')
+                value = os.getenv(f'{self.bookmaker.upper()}_{env.upper()}')
                 if value:
                     if value.upper() == 'TRUE':
                         value = True
