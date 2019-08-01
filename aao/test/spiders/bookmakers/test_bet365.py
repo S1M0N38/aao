@@ -11,11 +11,13 @@ username = os.environ['BET365_USERNAME']
 password = os.environ['BET365_PASSWORD']
 
 COMPETIONS = [
-    # country, _country, league, _league, page_name
+    # country, _country, league, _league,
     ['england', 'United Kingdom', 'premier_league', 'England Premier League'],
-    # ['england', 'england', 'elf_championship', 'the_championship', 'The Championship'],
+    ['england', 'United Kingdom', 'efl_championship', 'England Championship'],
     ['italy', 'Italy', 'serie_a', 'Italy Serie A'],
-    # ['spain', 'spain', 'la_liga', 'la_liga', 'La Liga'],
+    ['spain', 'Spain', 'la_liga', 'Spain Primera Liga'],
+    ['france', 'France', 'ligue_1', 'France Ligue 1'],
+    ['france', 'France', 'ligue_2', 'France Ligue 2'],
 ]
 
 
@@ -71,7 +73,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETIONS[0]
+    competition = COMPETIONS[5]
 
     @pytest.fixture(scope='module')
     def spider(self):
