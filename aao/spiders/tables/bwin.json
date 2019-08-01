@@ -108,7 +108,6 @@
             "Getafe": "Getafe",
             "Levante": "Levante",
             "Celta de Vigo": "Celta Vigo",
-            "Girona": "Girona",
             "Espanyol": "Espanyol",
             "Real Valladolid": "Real Valladolid",
             "SD Eibar": "Eibar",
@@ -117,8 +116,9 @@
             "Leganes": "Leganes",
             "Villarreal": "Villarreal",
             "Athletic Club": "Athletic Bilbao",
-            "Rayo Vallecano": "Rayo Vallecano",
-            "Huesca": "SD Huesca"
+            "Osasuna": "Osasuna",
+            "Granada CF": "Granada CF",
+            "RCD Mallorca": "Mallorca"
           }
         },
         "la_liga_2": {
