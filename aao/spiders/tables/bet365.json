@@ -30,7 +30,32 @@
         },
         "efl_championship": {
           "name": "England Championship",
-          "teams": null
+          "teams": {
+            "Luton": "Luton Town",
+            "Middlesbrough": "Middlesbrough",
+            "Barnsley": "Barnsley",
+            "Fulham": "Fulham",
+            "Blackburn": "Blackburn Rovers",
+            "Charlton": "Charlton Athletic",
+            "Brentford": "Brentford",
+            "Birmingham": "Birmingham",
+            "Millwall": "Millwall",
+            "Preston": "Preston North End",
+            "Reading": "Reading",
+            "Sheff Wed": "Sheffield Wednesday",
+            "Stoke": "Stoke City",
+            "QPR": "Queens Park Rangers",
+            "Swansea": "Swansea City",
+            "Hull": "Hull City",
+            "Wigan": "Wigan Athletic",
+            "Cardiff": "Cardiff City",
+            "Nottm Forest": "Nottingham Forest",
+            "West Brom": "West Bromwich",
+            "Bristol City": "Bristol City",
+            "Leeds": "Leeds United",
+            "Huddersfield": "Huddersfield Town",
+            "Derby": "Derby County"
+          }
         }
       }
     },
