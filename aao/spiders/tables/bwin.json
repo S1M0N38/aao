@@ -126,6 +126,61 @@
           "teams": null
         }
       }
+    },
+    "france": {
+      "name": "france",
+      "leagues": {
+        "ligue_1": {
+          "name": "4131",
+          "teams": {
+            "Paris Saint-Germain": "PSG",
+            "Olympique Lyonnais": "Lyon",
+            "Olympique de Marseille": "Marseille",
+            "OSC Lille": "Lille",
+            "AS Monaco": "Monaco",
+            "OGC Nice": "Nice",
+            "AS Saint-Etienne": "Saint-Etienne",
+            "Stade Rennais": "Rennes",
+            "Girondins de Bordeaux": "Bordeaux",
+            "Montpellier HSC": "Montpellier",
+            "FC Nantes": "Nantes",
+            "Stade Reims": "Reims",
+            "Racing Strasbourg": "Strasbourg",
+            "Nimes Olympique": "Nimes Olympique",
+            "FC Metz": "Metz",
+            "Angers SCO": "Angers",
+            "Toulouse FC": "Toulouse",
+            "Stade Brestois 29": "Brest",
+            "Amiens SC": "Amiens",
+            "Dijon FCO": "Dijon"
+          }
+        },
+        "ligue_2": {
+          "name": "ligue_2",
+          "teams": {
+            "AJ Auxerre": "Auxerre",
+            "Le Mans FC": "Le Mans",
+            "Chateauroux": "Chateauroux",
+            "Rodez Aveyron": "Rodez",
+            "Grenoble": "Grenoble",
+            "AC Ajaccio": "AC Ajaccio",
+            "Le Havre AC": "Le Havre",
+            "Chamois Niortais FC": "Niort",
+            "US Orleans": "Orleans",
+            "FC Chambly": "Chambly FC",
+            "Paris FC": "Paris FC",
+            "FC Sochaux Montbeliard": "Sochaux",
+            "Estac Troyes": "Troyes",
+            "Clermont Foot": "Clermont",
+            "Valenciennes FC": "Valenciennes",
+            "AS Nancy Lorraine": "Nancy",
+            "RC Lens": "RC Lens",
+            "EA Guingamp": "Guingamp",
+            "SM Caen": "Caen",
+            "FC Lorient": "Lorient"
+          }
+        }
+      }
     }
   }
 }

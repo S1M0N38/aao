@@ -8,9 +8,11 @@ pytestmark = pytest.mark.bwin
 COMPETITIONS = [
     # country, _country, league, _league, page_name
     ['england', 'england', 'premier_league', '46', 'Premier League Betting Odds'],
-    ['england', 'england', 'elf_championship', '3890', 'Championship Betting Odds'],
+    ['england', 'england', 'efl_championship', '3890', 'English Championship Betting Odds'],
     ['italy', 'italy', 'serie_a', '42', 'Serie A Odds'],
     ['spain', 'spain', 'la_liga', '16108', 'La Liga Odds'],
+    ['france', 'france', 'ligue_1', '4131', 'Ligue 1 Betting'],
+    ['france', 'france', 'ligue_2', '4132', 'Ligue 2 Betting'],
 ]
 
 
@@ -22,7 +24,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETITIONS[0]
+    competition = COMPETITIONS[5]
 
     @pytest.fixture(scope='module')
     def spider(self):
