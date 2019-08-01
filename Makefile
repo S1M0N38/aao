@@ -1,6 +1,6 @@
 pipenv:
 	pip install pipenv --upgrade -q
-	pipenv install --dev
+	pipenv install --dev --skip-lock
 
 chromedriver:
 	wget -q -N https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip -P ~/
