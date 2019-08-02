@@ -13,6 +13,8 @@ COMPETITIONS = [
     ['spain', 'spain', 'la_liga', 'Spanish-La-Liga-Primera', 'Spanish La Liga Primera'],
     ['france', 'france', 'ligue_1', 'French-Ligue-1', 'French Ligue 1'],
     ['france', 'france', 'ligue_2', 'French-Ligue-2', 'French Ligue 2'],
+    ['germany', 'germany', 'bundesliga_1', 'German-Bundesliga', 'German Bundesliga'],
+    ['germany', 'germany', 'bundesliga_2', 'German-Bundesliga-2', 'German Bundesliga 2'],
 ]
 
 
@@ -24,7 +26,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETITIONS[5]
+    competition = COMPETITIONS[7]
 
     @pytest.fixture(scope='class')
     def spider(self):
