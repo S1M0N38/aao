@@ -15,6 +15,13 @@
 |ligue_2|✓|✓|✓|✓|
 
 ---
+#### <span class="flag-icon flag-icon-de" style="margin:6px"></span> &nbsp; &nbsp; germany
+| &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; league&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  | bet365 | bwin | 888sport | williamhill |
+|-|:-:|:-:|:-:|:-:|
+|bundesliga_1|✓|✓|✓|✓|
+|bundesliga_2|✓|✓|✓|✓|
+
+---
 #### <span class="flag-icon flag-icon-it" style="margin:6px"></span> &nbsp; &nbsp; italy
 | &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; league&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  | bet365 | bwin | 888sport | williamhill |
 |-|:-:|:-:|:-:|:-:|
