@@ -181,6 +181,57 @@
           }
         }
       }
+    },
+    "germany": {
+      "name": "germany",
+      "leagues": {
+        "bundesliga_1": {
+          "name": "43",
+          "teams": {
+            "FC Bayern Munich": "Bayern Munchen",
+            "Hertha BSC": "Hertha Berlin",
+            "Bayer Leverkusen": "Bayer Leverkusen",
+            "SC Paderborn 07": "Paderborn 07",
+            "Borussia Dortmund": "Borussia Dortmund",
+            "FC Augsburg": "Augsburg",
+            "SC Freiburg": "Freiburg",
+            "FSV Mainz 05": "Mainz",
+            "VfL Wolfsburg": "Wolfsburg",
+            "1. FC Köln": "Koln",
+            "Werder Bremen": "Werder Bremen",
+            "Fortuna Dusseldorf": "Fortuna Dusseldorf",
+            "Borussia Mönchengladbach": "Borussia Monchengladbach",
+            "FC Schalke 04": "Schalke 04",
+            "Eintracht Frankfurt": "Eintracht Frankfurt",
+            "1899 Hoffenheim": "Hoffenheim",
+            "1. FC Union Berlin": "Union Berlin",
+            "RasenBallsport Leipzig": "Leipzig"
+          }
+        },
+        "bundesliga_2": {
+          "name": "79",
+          "teams": {
+            "SV Sandhausen": "Sandhausen",
+            "VfL Osnabrück": "Osnabruck",
+            "VfL Bochum": "Bochum",
+            "Arminia Bielefeld": "Arminia Bielefeld",
+            "FC St. Pauli": "St. Pauli",
+            "SpVgg Greuther Fürth": "Greuther Furth",
+            "Karlsruher SC": "Karlsruher",
+            "Dynamo Dresden": "Dynamo Dresden",
+            "Hannover 96": "Hannover 96",
+            "SSV Jahn Regensburg": "Jahn Regensburg",
+            "1. FC Heidenheim": "Heidenheim",
+            "VfB Stuttgart": "Stuttgart",
+            "SV Darmstadt 98": "Darmstadt 98",
+            "Holstein Kiel": "Holstein Kiel",
+            "FC Erzgebirge Aue": "Erzgebirge Aue",
+            "SV Wehen Wiesbaden": "Wehen Wiesbaden",
+            "1. FC Nürnberg": "Nurnberg",
+            "Hamburger SV": "Hamburg"
+          }
+        }
+      }
     }
   }
 }
