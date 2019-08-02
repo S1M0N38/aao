@@ -181,6 +181,57 @@
           }
         }
       }
+    },
+    "germany": {
+      "name": "Germany",
+      "leagues": {
+        "bundesliga_1": {
+          "name": "Germany Bundesliga I",
+          "teams": {
+            "Bayern Munich": "Bayern Munchen",
+            "Hertha Berlin": "Hertha Berlin",
+            "Bayer Leverkusen": "Bayer Leverkusen",
+            "Paderborn": "Paderborn 07",
+            "Borussia Dortmund": "Borussia Dortmund",
+            "Augsburg": "Augsburg",
+            "SC Freiburg": "Freiburg",
+            "Mainz": "Mainz",
+            "Wolfsburg": "Wolfsburg",
+            "Cologne": "Koln",
+            "Werder Bremen": "Werder Bremen",
+            "Fortuna Dusseldorf": "Fortuna Dusseldorf",
+            "Borussia M'gladbach": "Borussia Monchengladbach",
+            "Schalke": "Schalke 04",
+            "Eintracht Frankfurt": "Eintracht Frankfurt",
+            "TSG Hoffenheim": "Hoffenheim",
+            "Union Berlin": "Union Berlin",
+            "RB Leipzig": "Leipzig"
+          }
+        },
+        "bundesliga_2": {
+          "name": "Germany Bundesliga II",
+          "teams": {
+            "Sandhausen": "Sandhausen",
+            "VfL Osnabruck": "Osnabruck",
+            "Bochum": "Bochum",
+            "Arminia Bielefeld": "Arminia Bielefeld",
+            "St Pauli": "St. Pauli",
+            "Greuther Furth": "Greuther Furth",
+            "Karlsruher SC": "Karlsruher",
+            "Dynamo Dresden": "Dynamo Dresden",
+            "Hannover 96": "Hannover 96",
+            "Jahn Regensburg": "Jahn Regensburg",
+            "Heidenheim": "Heidenheim",
+            "VfB Stuttgart": "Stuttgart",
+            "Darmstadt": "Darmstadt 98",
+            "Holstein Kiel": "Holstein Kiel",
+            "Erzgebirge Aue": "Erzgebirge Aue",
+            "Wehen SV": "Wehen Wiesbaden",
+            "Nurnberg": "Nurnberg",
+            "Hamburg": "Hamburg"
+          }
+        }
+      }
     }
   }
 }
