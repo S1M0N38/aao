@@ -33,6 +33,8 @@ class ChromeDriver(Driver):
     def _set_headless(self):
         if self.headless:
             self.options.add_argument('--headless')
+            self.options.add_argument('--disable-dev-shm-usage')
+            self.options.add_argument('--no-sandbox')
 
     def _set_window_size(self):
         size = f'{self.window_size[1]},{self.window_size[0]}'
