@@ -1,7 +1,9 @@
 import datetime
 
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import (
+    TimeoutException, WebDriverException, NoSuchElementException)
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 from aao.spiders.spider import Spider
@@ -34,10 +36,16 @@ class Soccer(sports.Soccer):
         if url == self.browser.current_url:
             self.browser.refresh()
         self.browser.get(url)
+        try:
+            x_xpath = '//div[@class="message_block"]/img[@class="close"]'
+            self.browser.find_element_by_xpath(x_xpath).click()
+        except NoSuchElementException:
+            # the cookie message does not appear
+            pass
         class_name = 'KambiBC-mod-event-group-header__title-inner'
         locator = (By.CLASS_NAME, class_name)
         try:
-            self.wait.until(EC.visibility_of_all_elements_located(locator))
+            self.wait.until(EC.presence_of_all_elements_located(locator))
         except TimeoutException:
             msg = f'No data found for {self.country} - {self.league}.'
             self.log.error(msg)
@@ -68,12 +76,18 @@ class Soccer(sports.Soccer):
         xpath = ('//div[@class="KambiBC-collapsible-container '
                  'KambiBC-mod-event-group-container"]')
         panes = self.browser.find_elements_by_xpath(xpath)
+        # I don't know why by .execute_script is necessary :/ but it works
+        self.browser.execute_script("window.scrollTo(0, 800)")
         [pane.click() for pane in panes]
-        self.browser.execute_script("window.scrollTo(0, -10000)")
+        # scroll to the top, so the spider will be able to perform some click
+        self.browser.find_element_by_tag_name('body').send_keys(
+            Keys.CONTROL + Keys.HOME)
 
     def _get_rows(self):
         xpath = ('//header[not(contains(., "Live"))]/..'
                  '//div[@class="KambiBC-event-item__event-wrapper"]')
+        # I don't know why by .execute_script is necessary :/ it works
+        self.browser.execute_script("window.scrollTo(0, 300)")
         rows = self.browser.find_elements_by_xpath(xpath)
         rows = [row.text.split('\n') for row in rows]
         return rows

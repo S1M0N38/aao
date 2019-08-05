@@ -12,9 +12,13 @@ PROXY = os.environ['PROXY']
 COMPETITIONS = [
     # country, _country, league, _league, page_name
     ['england', 'england', 'premier_league', 'premier_league', 'Premier League'],
-    ['england', 'england', 'elf_championship', 'the_championship', 'The Championship'],
+    ['england', 'england', 'efl_championship', 'the_championship', 'The Championship'],
     ['italy', 'italy', 'serie_a', 'serie_a', 'Serie A'],
     ['spain', 'spain', 'la_liga', 'la_liga', 'La Liga'],
+    ['france', 'france', 'ligue_1', 'ligue_1', 'Ligue 1'],
+    ['france', 'france', 'ligue_2', 'ligue_2', 'Ligue 2'],
+    ['germany', 'germany', 'bundesliga_1', 'bundesliga', 'Bundesliga'],
+    ['germany', 'germany', 'bundesliga_2', '2__bundesliga', '2. Bundesliga'],
 ]
 
 
@@ -26,7 +30,7 @@ class TestSpider():
 
 class TestSoccer():
 
-    competition = COMPETITIONS[0]
+    competition = COMPETITIONS[7]
 
     @pytest.fixture(scope='module')
     def spider(self):
@@ -40,7 +44,7 @@ class TestSoccer():
 
     def test_request_page(self, spider):
         spider.soccer._request_page()
-        xpath = '//li[@class="KambiBC-term KambiBC-js-slider-item"]'
+        xpath = '//div[@class="KambiBC-breadcrumb-title"]'
         league = spider.browser.find_element_by_xpath(xpath).text
         assert league == self.competition[4]
 
@@ -122,6 +126,7 @@ class TestSoccer():
     @pytest.mark.parametrize('market_func', market_funcs)
     def test_market(self, spider, market_func):
         spider.soccer._request_page()
+        spider.soccer._expands_panes()
         events, *odds = getattr(spider.soccer, market_func)()
         assert [len(events) == len(o) for o in odds]
 
@@ -129,7 +134,6 @@ class TestSoccer():
 
     def test_events_odds(self, spider):
         events, odds = spider.soccer._events_odds()
-        [print(e, '\n', o, '\n') for e, o in zip(events, odds)]
         assert events
         assert odds
 
