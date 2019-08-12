@@ -51,7 +51,7 @@ class ChromeDriver(Driver):
             return
         if not isinstance(self.proxy, str):
             raise TypeError('Proxy must be a string, e.g. "http://1.1.1.1:1"')
-        type_, host, port = self.proxy.split(':')
+        type_, host, port, *auth = self.proxy.split(':')
         types = ('http', 'https', 'socks5')
         if type_ not in types:
             raise ValueError(f'Proxy supported type are {types}')
