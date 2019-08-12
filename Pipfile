@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-aao = {editable = true, path = "."}
+aao = {editable = true,path = "."}
 
 [dev-packages]
 pytest = "*"
@@ -15,6 +15,7 @@ pytest-cov = "*"
 codacy-coverage = "*"
 pytest-sugar = "*"
 "flake8" = "*"
+twine = "*"
 
 [requires]
 python_version = "3.7"
