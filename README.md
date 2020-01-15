@@ -1,3 +1,5 @@
+> :warning: This project is no longer supported, check out the [new version](https://github.com/S1M0N38/soccerapi) :warning:
+
 # Against all Odds
 
 [![Build Status](https://travis-ci.com/S1M0N38/aao.svg?branch=master)](https://travis-ci.com/S1M0N38/aao)
